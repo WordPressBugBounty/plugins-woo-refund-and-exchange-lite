@@ -13,19 +13,21 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 Provide an easy refund service and increase customer satisfaction with WooCommerce Return Refund and Exchange Warranty Management Plugin.
 
-
 == Description ==
 
 **HIGHEST-RATED REFUND AND EXCHANGE MANAGEMENT PLUGIN THAT LIFTS CUSTOMER SATISFACTION, AND CREATES A SIMPLE WOOCOMMERCE REFUND SYSTEM WITH EXCHANGE, WALLET, AND CANCEL ORDER FEATURES.**
 
-Return Refund and Exchange for WooCommerce lets you create simple returns and WooCommerce refund requests management system stuffed with an organized refund, exchange, wallet, and cancel order features. [**RMA Return, Refund & Exchange Plugin for WooCommerce Pro**](https://wpswings.com/product/rma-return-refund-exchange-for-woocommerce-pro/?utm_source=rma-org&utm_medium=referral&utm_campaign=rma-pro) eliminates on-call complaints and helps manage returned stock. 
+[**Return Refund and Exchange for WooCommerce**](https://wpswings.com/product/rma-return-refund-exchange-for-woocommerce-pro/?utm_source=rma-org&utm_medium=referral&utm_campaign=rma-pro)) lets you create simple returns and WooCommerce refund requests management system stuffed with an organized refund, exchange, wallet, and cancel order features. [**RMA Return, Refund & Exchange Plugin for WooCommerce Pro**](https://wpswings.com/product/rma-return-refund-exchange-for-woocommerce-pro/?utm_source=rma-org&utm_medium=referral&utm_campaign=rma-pro) eliminates on-call complaints and helps manage returned stock. 
 
 Customers can request full or partial WooCommerce refunds (based on the return policy). The whole process of WordPress Refund Plugin goes under a dedicated and streamlined mailing system that keeps both parties on the same note. Ultimately, the WooCommerce RMA Plugin leads to high customer satisfaction and is the most flexible refund and return order for the WooCommerce plugin.
 
-[**WooCommerce Return Plugin**](https://wpswings.com/product/rma-return-refund-exchange-for-woocommerce-pro/?utm_source=rma-org&utm_medium=referral&utm_campaign=rma-pro) | [**WordPress RMA Demo**](https://demo.wpswings.com/rma-return-refund-exchange-for-woocommerce-pro/?utm_source=rma-org-page&utm_medium=referral&utm_campaign=frontend-demo) | [**RMA Documentation**](https://docs.wpswings.com/rma-return-refund-exchange-for-woocommerce/?utm_source=rma-org-page&utm_medium=referral&utm_campaign=rma-doc) 
+[**WordPress RMA Demo**](https://demo.wpswings.com/rma-return-refund-exchange-for-woocommerce-pro/?utm_source=rma-org-page&utm_medium=referral&utm_campaign=frontend-demo) | [**RMA Documentation**](https://docs.wpswings.com/rma-return-refund-exchange-for-woocommerce/?utm_source=rma-org-page&utm_medium=referral&utm_campaign=rma-doc) 
 
 [youtube https://www.youtube.com/watch?v=GQhXfBtzLE0&w=560&h=315&rel=0]
 
+Empower your WooCommerce store with a complete RMA solution - manage returns, refunds, exchanges, and cancellations seamlessly with automated workflows, integrated shipping solutions, and real-time tracking! 📦🔄
+
+Enjoy a fang-tastic 25% off this Halloween [**WooCommerce Refund and Exchnage plugin**](https://wpswings.com/product/rma-return-refund-exchange-for-woocommerce-pro/?utm_source=rma-org&utm_medium=referral&utm_campaign=rma-pro) it’s the perfect treat for your WooCommerce store!🎉👻
 
 == SALIENT FEATURES OF THE RETURN REFUND AND EXCHANGE FOR WOOCOMMERCE PLUGIN ==
 
@@ -35,8 +37,7 @@ Customers can request full or partial WooCommerce refunds (based on the return p
 
 **3) Initiate Return, Exchange & Cancellation For A Specific Period**: Our WordPress RMA plugin enables the admin to set a specific time frame for all the refund, exchange, and cancellation requests. During this defined period, customers will have access to these respective request options on the website, while outside this timeframe, they will no longer be visible.
 
-**4) Dedicated WooCommerce Refund System**: 
-With our Return Refund and Exchange plugin, merchants can create a dedicated refund system, that offers a money-back guarantee, and where they can build an email template to send to the customers who ask for a refund. Merchants can add the name, email, email header, and footer for their email template 
+**4) Dedicated WooCommerce Refund System**: With our Return Refund and Exchange plugin, merchants can create a dedicated refund system, that offers a money-back guarantee, and where they can build an email template to send to the customers who ask for a refund. Merchants can add the name, email, email header, and footer for their email template 
 
 **5) Predefined Refund Reason**: Merchants can notify the customers of different scenarios for the product refund. They can create different emails if a refund request is generated, approved, or canceled. Merchants can add a different subject line and content for every scenario. They can also use Shortcodes to add elements to the email content.
 
