@@ -168,9 +168,9 @@ if ( ! function_exists( 'wps_rma_save_return_request_callback' ) ) {
 	 *
 	 * @param int    $order_id .
 	 * @param string $refund_method .
-	 * @param array  $return_products .
+	 * @param array  $products1 .
 	 */
-	function wps_rma_save_return_request_callback( $order_id, $refund_method, $return_products ) {
+	function wps_rma_save_return_request_callback( $order_id, $refund_method, $products1 ) {
 		update_option( $order_id . 'wps_rma_refund_method', $refund_method );
 		if ( ! is_user_logged_in() ) {
 			update_option( $order_id . 'wps_rma_refund_method', 'manual_method' );
@@ -186,8 +186,8 @@ if ( ! function_exists( 'wps_rma_save_return_request_callback' ) ) {
 		$gift_card_product = false;
 		$gift_item_id      = '';
 		$exp_flag          = false;
-		if ( isset( $return_products['products'] ) && ! empty( $return_products['products'] ) && is_array( $return_products['products'] ) ) {
-			foreach ( $return_products['products'] as $post_key => $post_value ) {
+		if ( isset( $products1['products'] ) && ! empty( $products1['products'] ) && is_array( $products1['products'] ) ) {
+			foreach ( $products1['products'] as $post_key => $post_value ) {
 				$item_id[ $post_value['item_id'] ] = 'pending';
 				$item_ids[]                        = $post_value['item_id'];
 
@@ -246,7 +246,7 @@ if ( ! function_exists( 'wps_rma_save_return_request_callback' ) ) {
 		if ( isset( $products ) && ! empty( $products ) ) {
 			foreach ( $products as $date => $product ) {
 				if ( 'pending' === $product['status'] ) {
-						$products[ $date ]           = $return_products;
+						$products[ $date ]           = $products1;
 						$products[ $date ]['status'] = 'pending'; // update requested products.
 						$pending                     = false;
 						break;
@@ -259,7 +259,7 @@ if ( ! function_exists( 'wps_rma_save_return_request_callback' ) ) {
 			}
 			$products                    = array();
 			$date                        = time();
-			$products[ $date ]           = $return_products;
+			$products[ $date ]           = $products1;
 			$products[ $date ]['status'] = 'pending';
 
 		}
@@ -556,6 +556,9 @@ if ( ! function_exists( 'wps_rma_standard_check_multistep' ) ) {
 }
 if ( ! function_exists( 'wps_rma_order_number' ) ) {
 	/**
+	 * Check Pro Active.
+	 */
+	/**
 	 * Return the correct order number
 	 *
 	 * @param int $order_id .
@@ -593,9 +596,7 @@ if ( ! function_exists( 'wps_rma_order_number' ) ) {
 }
 
 if ( ! function_exists( 'wps_rma_css_and_js_load_page' ) ) {
-	/**
-	 * Css and js file load
-	 */
+	/** Css and js file load */
 	function wps_rma_css_and_js_load_page() {
 		$load_flag         = false;
 		$return_page_id    = get_option( 'wps_rma_return_request_form_page_id' );
