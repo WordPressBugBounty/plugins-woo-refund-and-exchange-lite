@@ -8,10 +8,10 @@
  * @since      1.0.0
  *
  * @package    woo-refund-and-exchange-lite
- * @subpackage woo-refund-and-exchange-lite
+ * @subpackage woo-refund-and-exchange-lite/build
  */
 
 return array(
-	'dependencies' => array( 'react', 'react-dom', 'wp-element', 'wp-i18n', 'wp-polyfill' ),
-	'version' => '1eeaec857c2a90dad22e05e3c5474fcc',
+	'dependencies' => array( 'react', 'react-dom' ),
+	'version' => 'c40f489d7adf776543ba',
 );
