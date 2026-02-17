@@ -3,11 +3,11 @@ Contributors: wpswings
 Donate link: https://wpswings.com/
 Tags: refund, exchange, wallet, RMA, woocommerce cancel order
 Requires at least: 6.7.0
-Tested up to: 6.9
+Tested up to: 6.9.1
 WC requires at least: 6.5.0
-WC tested up to: 10.4.3
-Stable tag: 4.5.7
-Requires PHP:  7.2
+WC tested up to: 10.5.1
+Stable tag: 4.5.8
+Requires PHP: 7.2
 License: GPLv3 or later 
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -15,7 +15,7 @@ Provide an easy refund service and increase customer satisfaction with WooCommer
 
 == Description ==
 
-**Highest-rated refund and exchange management plugin that lifts customer satisfaction, and creates a simple woocommerce refund system with exchange, wallet, and cancel order features.**
+**HIGHEST-RATED REFUND AND EXCHANGE MANAGEMENT PLUGIN THAT LIFTS CUSTOMER SATISFACTION, AND CREATES A SIMPLE WOOCOMMERCE REFUND SYSTEM WITH EXCHANGE, WALLET, AND CANCEL ORDER FEATURES.**
 
 Return Refund and Exchange for WooCommerce lets you create simple returns and WooCommerce refund requests management system stuffed with an organized refund, exchange, wallet, and cancel order features. [**RMA Return, Refund & Exchange Plugin for WooCommerce Pro**](https://wpswings.com/product/rma-return-refund-exchange-for-woocommerce-pro/?utm_source=rma-org&utm_medium=referral&utm_campaign=rma-pro) eliminates on-call complaints and helps manage returned stock. 
 
@@ -29,10 +29,10 @@ Empower your WooCommerce store with a complete RMA solution - manage returns, re
 
 == SALIENT FEATURES OF THE RETURN REFUND AND EXCHANGE FOR WOOCOMMERCE PLUGIN ==
 
-#### **1) Set The User Limit For Refunds** 
+#### **1) Set The User Limit For Refunds 
 Merchants can now set the user limit for refunds. This helps the WooCommerce store owners to restrict fraudulent activities from happening.
  
-#### **2) Restrict A Particular User For The Refunds**
+#### **2) Restrict A Particular User For The Refunds
 WooCommerce returns for a particular user can also be restricted by simply entering their email addresses. Store owners can avoid fraudulent activities from occurring.
 
 #### **3) Attachments For Refund & Exchange**:
@@ -228,6 +228,9 @@ Automatic updates should work like a charm; as always though, ensure you backup 
 
 == Changelog == 
 
+= 4.5.8 - Released on 16 February 2026 = 
+*  New - comptability with latest wp (6.9.1) and wc (10.5.1)
+
 = 4.5.7 - Released on 5 January 2026 = 
 *  New - User Count Limit for refund functionality
 *  New - Restrict particular user for refund functionality through user email to prevent fraud refund request
@@ -274,11 +277,11 @@ Automatic updates should work like a charm; as always though, ensure you backup 
 * New: Compatibility with the latest WC [9.7.1]
 * New: Added Refund Rules on the Order View Page
 
-= 4.4.7 - Released on 21 Febuary 2025 = 
+= 4.4.7 - Released on 21 February 2025 = 
 * New: Compatibility with the latest WP [6.7.2] and WC [9.6.2]
 * Enhancement: Server-based calculation to avoid security concern and code stability
 
-= 4.4.6 - Released on 07 Febuary 2025 = 
+= 4.4.6 - Released on 07 February 2025 = 
 * Fix: vulnerability issues fixed 
 * New: Added compatibility with WC[9.6.1]
 
@@ -516,7 +519,5 @@ Automatic updates should work like a charm; as always though, ensure you backup 
 
 == Upgrade Notice ==
 
-= 4.5.6 - Released on 5 January 2026 = 
-*  New - User Count Limit for refund functionality
-*  New - Restrict particular user for refund functionality through user email to prevent fraud refund request
-*  New - comptability with latest wp (6.9) and wc (10.4.3)
+= 4.5.8 - Released on 16 February 2026 = 
+*  New - comptability with latest wp (6.9.1) and wc (10.5.1)
