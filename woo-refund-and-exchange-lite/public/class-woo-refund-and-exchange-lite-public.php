@@ -1,20 +1,22 @@
 <?php
 /**
- * The public-facing functionality of the plugin.
+ * The file that defines the core plugin class
+ *
+ * A class definition that includes attributes and functions used across both the
+ * public-facing side of the site and the admin area.
  *
  * @link       https://wpswings.com/
  * @since      1.0.0
  *
  * @package    woo-refund-and-exchange-lite
- * @subpackage woo-refund-and-exchange-lite/public
+ * @subpackage woo-refund-and-exchange-lite/includes
  */
 
 /**
  * The public-facing functionality of the plugin.
  *
- * Defines the plugin name, version, and two examples hooks for how to
- * enqueue the public-facing stylesheet and JavaScript.
- * namespace woo_refund_and_exchange_lite_public.
+ * @link       https://wpswings.com/
+ * @since      1.0.0
  *
  * @package    woo-refund-and-exchange-lite
  * @subpackage woo-refund-and-exchange-lite/public
@@ -24,7 +26,7 @@ class Woo_Refund_And_Exchange_Lite_Public {
 	/**
 	 * The ID of this plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.0	
 	 * @var      string    $plugin_name    The ID of this plugin.
 	 */
 	private $plugin_name;
@@ -57,7 +59,7 @@ class Woo_Refund_And_Exchange_Lite_Public {
 	 */
 	public function wrael_public_enqueue_styles() {
 		if ( function_exists( 'wps_rma_css_and_js_load_page' ) && wps_rma_css_and_js_load_page() ) {
-			wp_enqueue_style( $this->plugin_name, WOO_REFUND_AND_EXCHANGE_LITE_DIR_URL . 'public/css/woo-refund-and-exchange-lite-public.min.css', array(), $this->version, 'all' );
+			wp_enqueue_style( $this->plugin_name, WOO_REFUND_AND_EXCHANGE_LITE_DIR_URL . 'public/css/woo-refund-and-exchange-lite-public.css', array(), $this->version, 'all' );
 		}
 	}
 
@@ -69,7 +71,7 @@ class Woo_Refund_And_Exchange_Lite_Public {
 	public function wrael_public_enqueue_scripts() {
 		if ( function_exists( 'wps_rma_css_and_js_load_page' ) && wps_rma_css_and_js_load_page() ) {
 			$pro_active = wps_rma_pro_active();
-			wp_register_script( $this->plugin_name, WOO_REFUND_AND_EXCHANGE_LITE_DIR_URL . 'public/js/woo-refund-and-exchange-lite-public.min.js', array( 'jquery' ), $this->version, false );
+				wp_register_script( $this->plugin_name, WOO_REFUND_AND_EXCHANGE_LITE_DIR_URL . 'public/js/woo-refund-and-exchange-lite-public.js', array( 'jquery' ), $this->version, false );
 			wp_localize_script(
 				$this->plugin_name,
 				'wrael_public_param',

@@ -77,13 +77,12 @@ class Woo_Refund_And_Exchange_Lite {
 			$this->version = WOO_REFUND_AND_EXCHANGE_LITE_VERSION;
 		} else {
 
-			$this->version = '4.5.8';
+			$this->version = '4.5.9';
 		}
 
 		$this->plugin_name = 'return-refund-and-exchange-for-woocommerce';
 
 		$this->woo_refund_and_exchange_lite_dependencies();
-		$this->woo_refund_and_exchange_lite_locale();
 		if ( is_admin() ) {
 			$this->woo_refund_and_exchange_lite_admin_hooks();
 		} else {
@@ -118,12 +117,6 @@ class Woo_Refund_And_Exchange_Lite {
 		 */
 		include_once plugin_dir_path( __DIR__ ) . 'includes/class-woo-refund-and-exchange-lite-loader.php';
 
-		/**
-		 * The class responsible for defining internationalization functionality
-		 * of the plugin.
-		 */
-		include_once plugin_dir_path( __DIR__ ) . 'includes/class-woo-refund-and-exchange-lite-i18n.php';
-
 		if ( is_admin() ) {
 
 			// The class responsible for defining all actions that occur in the admin area.
@@ -155,31 +148,6 @@ class Woo_Refund_And_Exchange_Lite {
 		$this->loader = new Woo_Refund_And_Exchange_Lite_Loader();
 	}
 
-	/**
-	 * Define the locale for this plugin for internationalization.
-	 *
-	 * Uses the Woo_Refund_And_Exchange_Lite_I18n class in order to set the domain and to register the hook
-	 * with WordPress.
-	 *
-	 * @since 1.0.0
-	 */
-	private function woo_refund_and_exchange_lite_locale() {
-
-		$plugin_i18n = new Woo_Refund_And_Exchange_Lite_I18n();
-
-		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
-	}
-
-	/**
-	 * Define the name of the hook to save admin notices for this plugin.
-	 *
-	 * @since 1.0.0
-	 */
-	private function wps_saved_notice_hook_name() {
-		$wps_plugin_name                            = ! empty( explode( '/', plugin_basename( __FILE__ ) ) ) ? explode( '/', plugin_basename( __FILE__ ) )[0] : '';
-		$wps_plugin_settings_saved_notice_hook_name = $wps_plugin_name . '_settings_saved_notice';
-		return $wps_plugin_settings_saved_notice_hook_name;
-	}
 
 	/**
 	 * Register all of the hooks related to the admin area functionality
@@ -277,6 +245,7 @@ class Woo_Refund_And_Exchange_Lite {
 		}
 
 		$this->loader->add_action( 'admin_init', $wrael_plugin_admin, 'wps_rma_set_cron_for_plugin_notification' );
+		$this->loader->add_action( 'admin_init', $wrael_plugin_admin, 'wrael_maybe_dismiss_layout_notice' );
 		$this->loader->add_action( 'wps_wgm_check_for_notification_update', $wrael_plugin_admin, 'wps_rma_save_banner_info' );
 		$this->loader->add_action( 'wp_ajax_wps_rma_dismiss_notice_banner', $wrael_plugin_admin, 'wps_rma_dismiss_notice_banner_callback' );
 	}
@@ -328,7 +297,7 @@ class Woo_Refund_And_Exchange_Lite {
 
 		// Save ajax request for the plugin's multistep.
 		$this->loader->add_action( 'wp_ajax_wps_standard_save_settings_filter', $wrael_plugin_common, 'wps_rma_standard_save_settings_filter' );
-		$this->loader->add_action( 'wp_ajax_nopriv_wps_standard_save_settings_filter', $wrael_plugin_common, 'wps_rma_standard_save_settings_filter' );
+		
 		if ( self::is_enbale_usage_tracking() ) {
 			$this->loader->add_action( 'wpswings_tracker_send_event', $wrael_plugin_common, 'wps_rma_tracker_send_event' );
 		}
@@ -617,6 +586,49 @@ class Woo_Refund_And_Exchange_Lite {
 									?>
 									>
 								</label>
+								<div class="mdc-text-field-helper-line">
+									<div class="mdc-text-field-helper-text--persistent wps-helper-text" id="" aria-hidden="true"><?php echo ( isset( $wrael_component['description'] ) ? wp_kses_post( $wrael_component['description'] ) : '' ); ?></div>
+								</div>
+							</div>
+						</div>
+							<?php
+							break;
+
+						case 'color':
+							$current_color = '';
+
+							if ( isset( $wrael_component['value'] ) && sanitize_hex_color( $wrael_component['value'] ) ) {
+								$current_color = $wrael_component['value'];
+							} elseif ( isset( $wrael_component['placeholder'] ) && sanitize_hex_color( $wrael_component['placeholder'] ) ) {
+								$current_color = $wrael_component['placeholder'];
+							} else {
+								$current_color = '#000000';
+							}
+							?>
+						<div class="wps-form-group wps-wrael-color">
+							<div class="wps-form-group__label">
+								<label for="<?php echo esc_attr( $wrael_component['id'] ); ?>" class="wps-form-label"><?php echo ( isset( $wrael_component['title'] ) ? esc_html( $wrael_component['title'] ) : '' ); ?></label>
+							</div>
+							<div class="wps-form-group__control">
+								<div class="wps-rma-color-field" style="--wps-rma-color-current: <?php echo esc_attr( $current_color ); ?>;">
+									<input
+									class="wps-rma-color-field__input <?php echo ( isset( $wrael_component['class'] ) ? esc_attr( $wrael_component['class'] ) : '' ); ?>"
+									name="<?php echo ( isset( $wrael_component['name'] ) ? esc_html( $wrael_component['name'] ) : esc_html( $wrael_component['id'] ) ); ?>"
+									id="<?php echo esc_attr( $wrael_component['id'] ); ?>"
+									type="color"
+									value="<?php echo esc_attr( $current_color ); ?>"
+									title="<?php echo esc_attr( $current_color ); ?>"
+									aria-label="<?php echo ( isset( $wrael_component['title'] ) ? esc_attr( $wrael_component['title'] ) : esc_attr__( 'Choose color', 'woo-refund-and-exchange-lite' ) ); ?>"
+									<?php echo ' ' . ( isset( $wrael_component['attr'] ) ? esc_attr( $wrael_component['attr'] ) : '' ); ?>
+									>
+									<div class="wps-rma-color-field__content">
+										<div class="wps-rma-color-field__meta">
+											<span class="wps-rma-color-field__eyebrow"><?php esc_html_e( 'Aurora Luxe', 'woo-refund-and-exchange-lite' ); ?></span>
+											<span class="wps-rma-color-field__value"><?php echo esc_html( strtoupper( $current_color ) ); ?></span>
+										</div>
+										<span class="wps-rma-color-field__hint"><?php esc_html_e( 'Choose a color for this Aurora Luxe setting.', 'woo-refund-and-exchange-lite' ); ?></span>
+									</div>
+								</div>
 								<div class="mdc-text-field-helper-line">
 									<div class="mdc-text-field-helper-text--persistent wps-helper-text" id="" aria-hidden="true"><?php echo ( isset( $wrael_component['description'] ) ? wp_kses_post( $wrael_component['description'] ) : '' ); ?></div>
 								</div>

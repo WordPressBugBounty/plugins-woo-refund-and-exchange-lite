@@ -59,119 +59,160 @@ jQuery(function($){
 			$('.wps-form__password').attr('type', 'text');
 		}
 	});
-	$('.wps_rma_order_statues').select2();
+	wpsRmaInitPolicySelect2( $( document ) );
 
-	// Make setting object in js
-	var output_setting = [];
-	function make_register_setting_obj() {
-		let on_setting = [];
+	function wpsRmaGetRegisteredPolicies( $excludedRow ) {
+		var registeredPolicies = [];
+
 		$.each( $('.add_more_rma_policies'), function() {
-			var fun = $( this ).children( '.wps_rma_on_functionality' ).val();
-			var set = $( this ).children( '.wps_rma_settings' ).val();
-			var myObj = new Object();
-			myObj.name = fun;
-			myObj.value = set;
-			on_setting.push( myObj );
-		});
-		on_setting.forEach(function(item) {
-			var existing = output_setting.filter(function(v, i) {
-				return v.name == item.name;
-			});
-			if (existing.length) {
-				var existingIndex = output_setting.indexOf(existing[0]);
-				output_setting[existingIndex].value = output_setting[existingIndex].value.concat(item.value);
-			} else {
-				if (typeof item.value == 'string')
-				item.value = [item.value];
-				output_setting.push(item);
+			var $row = $( this );
+			var functionality;
+			var policy;
+			var existing;
+
+			if ( $excludedRow && $excludedRow.length && $row.is( $excludedRow ) ) {
+				return true;
 			}
-		});
+
+			functionality = $row.children( '.wps_rma_on_functionality' ).val();
+			policy = $row.children( '.wps_rma_settings' ).val();
+
+			if ( ! functionality || ! policy ) {
+				return true;
+			}
+
+			existing = registeredPolicies.filter( function( item ) {
+				return item.name === functionality;
+			} );
+
+			if ( existing.length ) {
+				existing[0].value.push( policy );
+			} else {
+				registeredPolicies.push( {
+					name: functionality,
+					value: [ policy ]
+				} );
+			}
+		} );
+
+		return registeredPolicies;
 	}
-	make_register_setting_obj();
+
+	function wpsRmaPolicyAlreadyExists( $row, functionality, policy ) {
+		var duplicatePolicy = false;
+
+		if ( ! functionality || ! policy ) {
+			return duplicatePolicy;
+		}
+
+		$.each( wpsRmaGetRegisteredPolicies( $row ), function( index, item ) {
+			if ( functionality === item.name && $.inArray( policy, item.value ) !== -1 ) {
+				duplicatePolicy = true;
+				return false;
+			}
+		} );
+
+		return duplicatePolicy;
+	}
+	function wpsRmaInitPolicySelect2( $scope ) {
+		if ( ! $.fn.select2 ) {
+			return;
+		}
+
+		$scope.find( '.wps_rma_order_statues, .wps_rma_ex_cate, .wps_rma_ex_prod' ).each( function() {
+			var $element = $( this );
+			var shouldInit = ! $element.prop( 'disabled' ) && $element.is( ':visible' );
+
+			if ( ! shouldInit ) {
+				if ( $element.hasClass( 'select2-hidden-accessible' ) ) {
+					$element.select2( 'destroy' );
+				}
+				$element.nextAll( '.select2-container' ).first().hide();
+				return;
+			}
+
+			if ( $element.hasClass( 'select2-hidden-accessible' ) ) {
+				$element.nextAll( '.select2-container' ).first().show();
+				return;
+			}
+
+			$element.select2( {
+				width: '100%'
+			} );
+		} );
+	}
+
+	function wpsRmaTogglePolicyField( $row, selector, shouldShow ) {
+		var $field = $row.children( selector );
+		var isMultiSelect = $field.is( 'select[multiple]' );
+
+		if ( ! $field.length ) {
+			return;
+		}
+
+		$field.prop( 'disabled', ! shouldShow );
+		$field.toggle( shouldShow );
+
+		if ( ! shouldShow && isMultiSelect && $field.hasClass( 'select2-hidden-accessible' ) ) {
+			$field.select2( 'destroy' );
+		}
+
+		if ( shouldShow && $.fn.select2 && isMultiSelect && ! $field.hasClass( 'select2-hidden-accessible' ) ) {
+			$field.select2( {
+				width: '100%'
+			} );
+		}
+
+		$field.nextAll( '.select2-container' ).first().toggle( shouldShow );
+	}
+
+	function wpsRmaTogglePolicyRow( $row ) {
+		var policy = $row.children( '.wps_rma_settings' ).val();
+		var showMaxNumber = 'wps_rma_maximum_days' === policy || 'wps_rma_min_order' === policy;
+		var showOrderStatuses = 'wps_rma_order_status' === policy;
+		var showTaxHandling = 'wps_rma_tax_handling' === policy;
+		var showConditionOne = '' === policy || 'wps_rma_maximum_days' === policy || 'wps_rma_min_order' === policy;
+		var showConditionTwo = 'wps_rma_order_status' === policy || 'wps_rma_tax_handling' === policy || 'wps_rma_exclude_via_categories' === policy || 'wps_rma_exclude_via_products' === policy;
+
+		wpsRmaTogglePolicyField( $row, '.wps_rma_max_number_days', showMaxNumber );
+		wpsRmaTogglePolicyField( $row, '.wps_rma_order_statues', showOrderStatuses );
+		wpsRmaTogglePolicyField( $row, '.wps_rma_tax_handling', showTaxHandling );
+		$row.children( '.wps_rma_conditions1' ).toggle( showConditionOne );
+		$row.children( '.wps_rma_conditions2' ).toggle( showConditionTwo );
+		$row.children( '.wps_rma_conditions_label, .wps_rma_settings_label' ).show();
+	}
+
 	// Function to show correct setting respective selected setting.
 	function show_correct_field(){
-		$.each( $('.wps_rma_settings'), function() {
-			if( $( this ).val() == '' ) {
-				$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_max_number_days' ).hide();
-				$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_conditions1' ).show();
-				$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_conditions2' ).hide();
-				$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_tax_handling' ).hide();
-				$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_order_statues' ).hide();
-				$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_order_statues' ).next().hide();
-			} else if( $( this ).val() == 'wps_rma_maximum_days' ) {
-				$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_max_number_days' ).show();
-				$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_conditions1' ).show();
-				$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_conditions2' ).hide();
-				$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_tax_handling' ).hide();
-				$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_order_statues' ).hide();
-				$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_order_statues' ).next().hide();
-			} else if ( $( this ).val() == 'wps_rma_order_status' ) {
-				$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_order_statues' ).show();
-				$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_order_statues' ).next().show();
-				$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_tax_handling' ).hide();
-				$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_conditions1' ).hide();
-				$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_conditions2' ).show();
-				$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_max_number_days' ).hide();
-			} else if ( $( this ).val() == 'wps_rma_tax_handling' ) {
-				$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_tax_handling' ).show();
-				$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_order_statues' ).hide();
-				$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_order_statues' ).next().hide();
-				$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_max_number_days' ).hide();
-				$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_conditions1' ).hide();
-				$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_conditions_label' ).show();
-				$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_settings_label' ).show();
-				$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_conditions2' ).show();
-			}
+		$.each( $('.add_more_rma_policies'), function() {
+			wpsRmaTogglePolicyRow( $( this ) );
 		});
+
+		if ( 'function' === typeof show_correct_field_pro ) {
+			show_correct_field_pro( '' );
+		}
 	}
+	window.wpsRmaInitPolicySelect2 = wpsRmaInitPolicySelect2;
+	window.show_correct_field = show_correct_field;
 	show_correct_field();
 	// show correct setting respective selected setting and if remove if setting already is exist and also show an alert.
 	$(document).on( 'change', '.wps_rma_settings, .wps_rma_on_functionality', function() {
-		var current_fun = $( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_on_functionality' ).val();
-		var current_set = $( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_settings' ).val();;
-		var current_set_obj = $( this );
-		if( current_set != '' && current_set != null ) {
-			output_setting.forEach(function(item) {
-				if( current_fun == item.name && item.value != null &&  $.inArray( current_set, item.value ) != -1 ) {
-					alert(wrael_admin_param.wps_policy_already_exist);
-					current_set_obj.parent( '.add_more_rma_policies' ).remove();
-				}
-			});
+		var $currentRow = $( this ).parent( '.add_more_rma_policies' );
+		var current_fun = $currentRow.children( '.wps_rma_on_functionality' ).val();
+		var current_set = $currentRow.children( '.wps_rma_settings' ).val();
+
+		if ( wpsRmaPolicyAlreadyExists( $currentRow, current_fun, current_set ) ) {
+			alert( wrael_admin_param.wps_policy_already_exist );
+			$currentRow.remove();
+			show_correct_field();
+			return;
 		}
 	
-		if( current_set_obj.val() == '' ) {
-			$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_max_number_days' ).hide();
-			$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_conditions1' ).show();
-			$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_conditions2' ).hide();
-			$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_tax_handling' ).hide();
-			$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_order_statues' ).hide();
-			$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_order_statues' ).next().hide();
-		} else if( current_set_obj.val() == 'wps_rma_maximum_days' ) {
-			$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_max_number_days' ).show();
-			$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_conditions1' ).show();
-			$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_conditions2' ).hide();
-			$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_tax_handling' ).hide();
-			$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_order_statues' ).hide();
-			$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_order_statues' ).next().hide();
-		} else if ( current_set_obj.val() == 'wps_rma_order_status' ) {
-			$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_order_statues' ).show();
-			$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_order_statues' ).next().show();
-			$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_tax_handling' ).hide();
-			$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_conditions1' ).hide();
-			$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_conditions2' ).show();
-			$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_max_number_days' ).hide();
-		} else if ( current_set_obj.val() == 'wps_rma_tax_handling' ) {
-			$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_tax_handling' ).show();
-			$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_order_statues' ).hide();
-			$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_order_statues' ).next().hide();
-			$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_max_number_days' ).hide();
-			$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_conditions1' ).hide();
-			$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_conditions2' ).show();
-			$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_conditions_label' ).show();
-			$( this ).parent( '.add_more_rma_policies' ).children( '.wps_rma_settings_label' ).show();
+		wpsRmaTogglePolicyRow( $currentRow );
+
+		if ( 'function' === typeof show_correct_field_pro ) {
+			show_correct_field_pro( '' );
 		}
-		output_setting = [];
-		make_register_setting_obj();
 	});
 	// Remove due to empty field.
 	$(document).on( 'submit', '#save_policies_setting_form', function(e) {
@@ -202,19 +243,18 @@ jQuery(function($){
 			append_html = show_correct_field_pro( append_html );
 		}
 		$('#div_add_more_rma_policies').append( '<div class="add_more_rma_policies">' +append_html + '<input type="button" value="X" class="rma_policy_delete"></div>' );
-		$('.add_more_rma_policies').last().children( '.wps_rma_get_current_i' ).val( wps_rma_get_current_i );
-		$('.wps_rma_order_statues').select2();
-		if( pro_act ) {
+		var $newPolicyRow = $('.add_more_rma_policies').last();
+		$newPolicyRow.children( '.wps_rma_get_current_i' ).val( wps_rma_get_current_i );
+		wpsRmaInitPolicySelect2( $newPolicyRow );
+		if( 'function' === typeof wps_rma_do_something && pro_act ) {
 			wps_rma_do_something();
 		}
 		show_correct_field();
-		make_register_setting_obj();
 	});
 	// Delete selected row.
 	$(document).on( 'click', '.rma_policy_delete', function() {
 		$(this).parent( '.add_more_rma_policies' ).remove();
 		show_correct_field();
-		make_register_setting_obj();
 	});
 	// Refund Request Accept functionality
 	$( '.wps_rma_return_loader' ).hide(); // Hide the loader in the refund request metabox
@@ -500,4 +540,355 @@ jQuery(function($){
 		console.log('test');
 		$(this).parent().toggleClass('open');
 	});
+});
+
+jQuery(function($){
+	if ( 'undefined' === typeof window.history || ! $( '.wps-rma-shell__frame' ).length ) {
+		return;
+	}
+
+	var wpsRmaDynamicTabLoading = false;
+	var wpsRmaDynamicTabSelector = '.wps-rma-shell__tab-link[href*="wrael_tab="], .wps-rma-shell__overflow-link[href*="wrael_tab="]';
+	var wpsRmaDashboardTableOptions = {
+		stateSave: true,
+		dom: '<"wps-dt-buttons"fB>tr<"bottom"lip>',
+		ordering: true,
+		buttons: [ 'copyHtml5', 'excelHtml5', 'csvHtml5' ],
+		language: {
+			lengthMenu: 'Rows per page _MENU_',
+			paginate: {
+				next: '<svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.99984 0L0.589844 1.41L5.16984 6L0.589844 10.59L1.99984 12L7.99984 6L1.99984 0Z" fill="#8E908F"/></svg>',
+				previous: '<svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M6.00016 12L7.41016 10.59L2.83016 6L7.41016 1.41L6.00016 -1.23266e-07L0.000156927 6L6.00016 12Z" fill="#8E908F"/></svg>'
+			}
+		}
+	};
+
+	function wpsRmaInitDashboardMdc( $scope ) {
+		if ( 'undefined' === typeof mdc ) {
+			return;
+		}
+
+		if ( mdc.textField && mdc.textField.MDCTextField ) {
+			[].forEach.call( $scope[0].querySelectorAll( '.mdc-text-field' ), function( element ) {
+				if ( ! element.dataset.wpsRmaMdcTextInit ) {
+					new mdc.textField.MDCTextField( element );
+					element.dataset.wpsRmaMdcTextInit = 'true';
+				}
+			} );
+		}
+
+		if ( mdc.ripple && mdc.ripple.MDCRipple ) {
+			[].forEach.call( $scope[0].querySelectorAll( '.mdc-button' ), function( element ) {
+				if ( ! element.dataset.wpsRmaMdcRippleInit ) {
+					new mdc.ripple.MDCRipple( element );
+					element.dataset.wpsRmaMdcRippleInit = 'true';
+				}
+			} );
+		}
+
+		if ( mdc.switchControl && mdc.switchControl.MDCSwitch ) {
+			[].forEach.call( $scope[0].querySelectorAll( '.mdc-switch' ), function( element ) {
+				if ( ! element.dataset.wpsRmaMdcSwitchInit ) {
+					new mdc.switchControl.MDCSwitch( element );
+					element.dataset.wpsRmaMdcSwitchInit = 'true';
+				}
+			} );
+		}
+	}
+
+	function wpsRmaInitDashboardSelect2( $scope ) {
+		if ( ! $.fn.select2 ) {
+			return;
+		}
+
+		$scope.find( '.wps-defaut-multiselect, .wps_rma_order_statues, .wps_rma_ex_cate, .wps_rma_ex_prod, #wps_wrma_ship_products' ).each( function() {
+			var $element = $( this );
+
+			if ( $element.hasClass( 'select2-hidden-accessible' ) ) {
+				return;
+			}
+
+			$element.select2( {
+				width: '100%'
+			} );
+		} );
+	}
+
+		function wpsRmaInitPolicyRows( $scope ) {
+			if ( ! $scope.find( '#save_policies_setting_form' ).length ) {
+				return;
+			}
+
+			if ( 'function' === typeof window.wpsRmaInitPolicySelect2 ) {
+				window.wpsRmaInitPolicySelect2( $scope );
+			}
+			if ( 'function' === typeof window.show_correct_field ) {
+				window.show_correct_field();
+			}
+
+			if ( 'function' === typeof wps_rma_do_something ) {
+				wps_rma_do_something();
+			}
+	}
+
+	function wpsRmaInitDashboardDataTable( $scope ) {
+		var $table = $scope.find( '#wrael-datatable' );
+
+		if ( ! $table.length || ! $.fn.DataTable || ( $.fn.dataTable && $.fn.dataTable.isDataTable( $table[0] ) ) ) {
+			return;
+		}
+
+		$table.DataTable( wpsRmaDashboardTableOptions );
+	}
+
+	function wpsRmaInitDashboardState( $scope ) {
+		setTimeout( function() {
+			$scope.find( '.wps_rma_pro_class' ).parents( '.wps-form-group' ).addClass( 'wps_rma_pro_class_wrap' );
+		}, 1 );
+
+		$scope.find( '.wps_wrma_return_loader, .wps_wrma_returnship_loader' ).hide();
+		$scope.find( '.wps_rma_shipping_label_setting' ).show();
+		$scope.find( '.wps_rma_shipping_setting, .wps_rma_shiprocket_setting' ).hide();
+		$scope.find( '.show_returnship_label' ).addClass( 'shipClass' );
+		$scope.find( '.button_wps_rma_pro_class' ).parent( 'button' ).prop( 'disabled', true );
+		$scope.find( '.button_wps_rma_pro_div' ).css( {
+			'background-color': 'rgba(0,0,0,.12)',
+			'pointer-events': 'none'
+		} );
+		$scope.find( '.wps_rma_pro_class_wrap label, .wps_rma_pro_div label' ).attr( 'for', '' );
+
+		if ( $scope.find( '#wps_enable_ship_setting' ).is( ':checked' ) ) {
+			$scope.find( '#add_fee' ).show();
+		} else {
+			$scope.find( '#add_fee' ).hide();
+		}
+
+		if ( $.fn.timepicker ) {
+			$scope.find( '.wps_rma_date_time_picker1' ).timepicker( {
+				showPeriod: true,
+				showLeadingZero: true
+			} );
+			$scope.find( '.wps_rma_date_time_picker2' ).timepicker( {
+				showPeriod: true,
+				showLeadingZero: true
+			} );
+		}
+	}
+
+	function wpsRmaInitDynamicFrame( $scope ) {
+		if ( ! $scope.length ) {
+			return;
+		}
+
+		wpsRmaInitDashboardMdc( $scope );
+		wpsRmaInitDashboardSelect2( $scope );
+		wpsRmaInitDashboardDataTable( $scope );
+		wpsRmaInitDashboardState( $scope );
+		wpsRmaInitPolicyRows( $scope );
+	}
+
+	function wpsRmaUpdatePasswordField() {
+		var $passwordField = $( '.wps-form__password' );
+
+		if ( ! $passwordField.length ) {
+			return;
+		}
+
+		$passwordField.attr( 'type', 'text' === $passwordField.attr( 'type' ) ? 'password' : 'text' );
+	}
+
+	function wpsRmaFetchDashboardTab( url, shouldPushState ) {
+		var $currentFrame = $( '.wps-rma-shell__frame' ).first();
+
+		if ( ! $currentFrame.length || wpsRmaDynamicTabLoading ) {
+			return;
+		}
+
+		if ( url === window.location.href ) {
+			return;
+		}
+
+		wpsRmaDynamicTabLoading = true;
+		$currentFrame.addClass( 'wps-rma-shell__frame--loading' );
+
+		$.get( url ).done( function( response ) {
+			var $response = $( '<div />' ).append( $.parseHTML( response, document, true ) );
+			var $newFrame = $response.find( '.wps-rma-shell__frame' ).first();
+			var newTitle = $response.filter( 'title' ).text() || $response.find( 'title' ).first().text();
+
+			if ( ! $newFrame.length ) {
+				window.location.href = url;
+				return;
+			}
+
+			$currentFrame.replaceWith( $newFrame );
+			wpsRmaInitDynamicFrame( $newFrame );
+
+			if ( shouldPushState ) {
+				window.history.pushState( { wpsRmaTabUrl: url }, '', url );
+			}
+
+			if ( newTitle ) {
+				document.title = newTitle;
+			}
+
+			if ( $newFrame.offset() ) {
+				window.scrollTo( 0, Math.max( $newFrame.offset().top - 24, 0 ) );
+			}
+		} ).fail( function() {
+			window.location.href = url;
+		} ).always( function() {
+			wpsRmaDynamicTabLoading = false;
+			$( '.wps-rma-shell__frame' ).first().removeClass( 'wps-rma-shell__frame--loading' );
+		} );
+	}
+
+	$( document ).off( 'click.wpsRmaDynamicTabs', '.wps-password-hidden' ).on( 'click.wpsRmaDynamicTabs', '.wps-password-hidden', function() {
+		wpsRmaUpdatePasswordField();
+	} );
+
+	$( document ).off( 'change.wpsRmaDynamicTabs', '#wps_enable_ship_setting' ).on( 'change.wpsRmaDynamicTabs', '#wps_enable_ship_setting', function() {
+		var $container = $( this ).closest( '.wps-rma-shell__surface, body' );
+		$container.find( '#add_fee' )[ $( this ).is( ':checked' ) ? 'show' : 'hide' ]();
+	} );
+
+	$( document ).off( 'click.wpsRmaDynamicTabs', wpsRmaDynamicTabSelector ).on( 'click.wpsRmaDynamicTabs', wpsRmaDynamicTabSelector, function( event ) {
+		if ( event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || 1 !== event.which ) {
+			return;
+		}
+
+		event.preventDefault();
+		wpsRmaFetchDashboardTab( $( this ).attr( 'href' ), true );
+	} );
+
+	$( window ).off( 'popstate.wpsRmaDynamicTabs' ).on( 'popstate.wpsRmaDynamicTabs', function( event ) {
+		if ( ! $( '.wps-rma-shell__frame' ).length ) {
+			return;
+		}
+
+		var targetUrl = event.originalEvent.state && event.originalEvent.state.wpsRmaTabUrl ? event.originalEvent.state.wpsRmaTabUrl : window.location.href;
+		wpsRmaFetchDashboardTab( targetUrl, false );
+	} );
+
+	window.history.replaceState( { wpsRmaTabUrl: window.location.href }, '', window.location.href );
+	wpsRmaInitDynamicFrame( $( '.wps-rma-shell__frame' ).first() );
+});
+
+jQuery(function($) {
+	var wpsRmaAuroraTemplateSettings = {
+		wps_rma_return_template_css: [
+			'wps_rma_refund_background_color',
+			'wps_rma_refund_surface_color',
+			'wps_rma_refund_accent_color',
+			'wps_rma_refund_text_color',
+			'wps_rma_refund_button_text_color'
+		],
+		wps_rma_exchange_template_css: [
+			'wps_rma_exchange_background_color',
+			'wps_rma_exchange_surface_color',
+			'wps_rma_exchange_accent_color',
+			'wps_rma_exchange_text_color',
+			'wps_rma_exchange_button_text_color'
+		],
+		wps_rma_cancel_template_css: [
+			'wps_rma_cancel_background_color',
+			'wps_rma_cancel_surface_color',
+			'wps_rma_cancel_accent_color',
+			'wps_rma_cancel_text_color',
+			'wps_rma_cancel_button_text_color'
+		],
+		wps_rma_order_msg_template_css: [
+			'wps_rma_order_msg_background_color',
+			'wps_rma_order_msg_surface_color',
+			'wps_rma_order_msg_accent_color',
+			'wps_rma_order_msg_text_color',
+			'wps_rma_order_msg_button_text_color'
+		]
+	};
+	var wpsRmaAuroraTemplateSelector = Object.keys( wpsRmaAuroraTemplateSettings ).map( function( fieldName ) {
+		return 'input[name="' + fieldName + '"]';
+	} ).join( ', ' );
+	var wpsRmaAuroraToggleTimer = null;
+
+	function wpsRmaGetAuroraFieldWrapper( $field ) {
+		var $wrapper = $field.closest( 'tr' );
+
+		if ( $wrapper.length ) {
+			return $wrapper;
+		}
+
+		$wrapper = $field.closest( '.wps-form-group' );
+
+		if ( $wrapper.length ) {
+			return $wrapper;
+		}
+
+		$wrapper = $field.closest( '.forminp' );
+
+		if ( $wrapper.length ) {
+			return $wrapper;
+		}
+
+		return $field.parent();
+	}
+
+	function wpsRmaToggleAuroraCustomizer( $scope ) {
+		$scope = $scope && $scope.length ? $scope : $( document );
+
+		$.each( wpsRmaAuroraTemplateSettings, function( templateField, dependentFields ) {
+			var $checkedTemplate = $scope.find( 'input[name="' + templateField + '"]:checked' );
+
+			if ( ! $checkedTemplate.length ) {
+				$checkedTemplate = $( 'input[name="' + templateField + '"]:checked' );
+			}
+
+			if ( ! $checkedTemplate.length ) {
+				return;
+			}
+
+			$.each( dependentFields, function( _, dependentField ) {
+				var $field = $scope.find( '#' + dependentField );
+
+				if ( ! $field.length ) {
+					$field = $( '#' + dependentField );
+				}
+
+				if ( ! $field.length ) {
+					return;
+				}
+
+				wpsRmaGetAuroraFieldWrapper( $field ).toggle( 'template2' === $checkedTemplate.val() );
+			} );
+		} );
+	}
+
+	function wpsRmaScheduleAuroraCustomizer() {
+		clearTimeout( wpsRmaAuroraToggleTimer );
+		wpsRmaAuroraToggleTimer = setTimeout( function() {
+			var $frame = $( '.wps-rma-shell__frame' ).first();
+			wpsRmaToggleAuroraCustomizer( $frame.length ? $frame : $( document ) );
+		}, 0 );
+	}
+
+	$( document ).off( 'change.wpsRmaAuroraCustomizer', wpsRmaAuroraTemplateSelector ).on( 'change.wpsRmaAuroraCustomizer', wpsRmaAuroraTemplateSelector, function() {
+		var $container = $( this ).closest( '.wps-rma-shell__frame, .wrap' );
+		wpsRmaToggleAuroraCustomizer( $container.length ? $container : $( document ) );
+	} );
+
+	if ( 'MutationObserver' in window && document.body ) {
+		new MutationObserver( function( mutations ) {
+			for ( var i = 0; i < mutations.length; i++ ) {
+				if ( mutations[ i ].addedNodes.length || mutations[ i ].removedNodes.length ) {
+					wpsRmaScheduleAuroraCustomizer();
+					break;
+				}
+			}
+		} ).observe( document.body, {
+			childList: true,
+			subtree: true
+		} );
+	}
+
+	window.wpsRmaToggleAuroraCustomizer = wpsRmaToggleAuroraCustomizer;
+	wpsRmaScheduleAuroraCustomizer();
 });

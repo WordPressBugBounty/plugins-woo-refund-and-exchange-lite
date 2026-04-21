@@ -280,10 +280,56 @@ if ( ! class_exists( 'Wps_Rma_Settings_Extend' ) ) {
 					'value' => get_option( 'wps_rma_return_template_css' ),
 					'class' => 'mwr-radio-class',
 					'options' => array(
-						'' => esc_html__( 'Default', 'woo-refund-and-exchange-lite' ),
-						'template1' => esc_html__( 'Clean Slate', 'woo-refund-and-exchange-lite' ),
+					'' => esc_html__( 'Default', 'woo-refund-and-exchange-lite' ),
+					'template1' => esc_html__( 'Clean Slate', 'woo-refund-and-exchange-lite' ),
+					'template2' => esc_html__( 'Aurora Luxe', 'woo-refund-and-exchange-lite' ),
 					),
 				);
+
+			$refund_app_setting_extend[] = array(
+				'title'       => esc_html__( 'Background Color', 'woo-refund-and-exchange-lite' ),
+				'type'        => 'color',
+				'id'          => 'wps_rma_refund_background_color',
+				'value'       => get_option( 'wps_rma_refund_background_color' ),
+				'class'       => 'wrael-text-class',
+				'placeholder' => esc_html__( '#fffdf7', 'woo-refund-and-exchange-lite' ),
+			);
+
+			$refund_app_setting_extend[] = array(
+				'title'       => esc_html__( 'Surface Color', 'woo-refund-and-exchange-lite' ),
+				'type'        => 'color',
+				'id'          => 'wps_rma_refund_surface_color',
+				'value'       => get_option( 'wps_rma_refund_surface_color' ),
+				'class'       => 'wrael-text-class',
+				'placeholder' => esc_html__( '#ffffff', 'woo-refund-and-exchange-lite' ),
+			);
+
+			$refund_app_setting_extend[] = array(
+				'title'       => esc_html__( 'Accent Color', 'woo-refund-and-exchange-lite' ),
+				'type'        => 'color',
+				'id'          => 'wps_rma_refund_accent_color',
+				'value'       => get_option( 'wps_rma_refund_accent_color' ),
+				'class'       => 'wrael-text-class',
+				'placeholder' => esc_html__( '#ff9800', 'woo-refund-and-exchange-lite' ),
+			);
+
+			$refund_app_setting_extend[] = array(
+				'title'       => esc_html__( 'Text Color', 'woo-refund-and-exchange-lite' ),
+				'type'        => 'color',
+				'id'          => 'wps_rma_refund_text_color',
+				'value'       => get_option( 'wps_rma_refund_text_color' ),
+				'class'       => 'wrael-text-class',
+				'placeholder' => esc_html__( '#18120b', 'woo-refund-and-exchange-lite' ),
+			);
+
+			$refund_app_setting_extend[] = array(
+				'title'       => esc_html__( 'Button Text Color', 'woo-refund-and-exchange-lite' ),
+				'type'        => 'color',
+				'id'          => 'wps_rma_refund_button_text_color',
+				'value'       => get_option( 'wps_rma_refund_button_text_color' ),
+				'class'       => 'wrael-text-class',
+				'placeholder' => esc_html__( '#18120b', 'woo-refund-and-exchange-lite' ),
+			);
 			}
 			return $refund_app_setting_extend;
 		}
@@ -686,7 +732,53 @@ if ( ! class_exists( 'Wps_Rma_Settings_Extend' ) ) {
 				'options' => array(
 					'' => esc_html__( 'Default', 'woo-refund-and-exchange-lite' ),
 					'template1' => esc_html__( 'Clean Slate', 'woo-refund-and-exchange-lite' ),
+					'template2' => esc_html__( 'Aurora Luxe', 'woo-refund-and-exchange-lite' ),
 				),
+			);
+
+			$wps_rma_settings_exchange[] = array(
+				'title'       => esc_html__( 'Background Color', 'woo-refund-and-exchange-lite' ),
+				'type'        => 'color',
+				'id'          => 'wps_rma_exchange_background_color',
+				'value'       => get_option( 'wps_rma_exchange_background_color' ),
+				'class'       => 'wrael-text-class ' . $this->rma_pro_activate,
+				'placeholder' => esc_html__( '#fffdf7', 'woo-refund-and-exchange-lite' ),
+			);
+
+			$wps_rma_settings_exchange[] = array(
+				'title'       => esc_html__( 'Surface Color', 'woo-refund-and-exchange-lite' ),
+				'type'        => 'color',
+				'id'          => 'wps_rma_exchange_surface_color',
+				'value'       => get_option( 'wps_rma_exchange_surface_color' ),
+				'class'       => 'wrael-text-class ' . $this->rma_pro_activate,
+				'placeholder' => esc_html__( '#ffffff', 'woo-refund-and-exchange-lite' ),
+			);
+
+			$wps_rma_settings_exchange[] = array(
+				'title'       => esc_html__( 'Accent Color', 'woo-refund-and-exchange-lite' ),
+				'type'        => 'color',
+				'id'          => 'wps_rma_exchange_accent_color',
+				'value'       => get_option( 'wps_rma_exchange_accent_color' ),
+				'class'       => 'wrael-text-class ' . $this->rma_pro_activate,
+				'placeholder' => esc_html__( '#ff9800', 'woo-refund-and-exchange-lite' ),
+			);
+
+			$wps_rma_settings_exchange[] = array(
+				'title'       => esc_html__( 'Text Color', 'woo-refund-and-exchange-lite' ),
+				'type'        => 'color',
+				'id'          => 'wps_rma_exchange_text_color',
+				'value'       => get_option( 'wps_rma_exchange_text_color' ),
+				'class'       => 'wrael-text-class ' . $this->rma_pro_activate,
+				'placeholder' => esc_html__( '#18120b', 'woo-refund-and-exchange-lite' ),
+			);
+
+			$wps_rma_settings_exchange[] = array(
+				'title'       => esc_html__( 'Button Text Color', 'woo-refund-and-exchange-lite' ),
+				'type'        => 'color',
+				'id'          => 'wps_rma_exchange_button_text_color',
+				'value'       => get_option( 'wps_rma_exchange_button_text_color' ),
+				'class'       => 'wrael-text-class ' . $this->rma_pro_activate,
+				'placeholder' => esc_html__( '#18120b', 'woo-refund-and-exchange-lite' ),
 			);
 			$wps_rma_settings_exchange   =
 			// To extend Refund Apperance setting.
@@ -695,7 +787,7 @@ if ( ! class_exists( 'Wps_Rma_Settings_Extend' ) ) {
 				'type'        => 'button',
 				'id'          => 'wps_rma_save_exchange_setting',
 				'button_text' => esc_html__( 'Save Setting', 'woo-refund-and-exchange-lite' ),
-				'class'       => 'wrael-button-class button_' . $this->rma_pro_activate,
+				'class'       => 'wrael-button-class submit-btn button_' . $this->rma_pro_activate ,
 			);
 			return $wps_rma_settings_exchange;
 		}
@@ -906,13 +998,59 @@ if ( ! class_exists( 'Wps_Rma_Settings_Extend' ) ) {
 				'options' => array(
 					'' => esc_html__( 'Default', 'woo-refund-and-exchange-lite' ),
 					'template1' => esc_html__( 'Clean Slate', 'woo-refund-and-exchange-lite' ),
+					'template2' => esc_html__( 'Aurora Luxe', 'woo-refund-and-exchange-lite' ),
 				),
+			);
+
+			$wps_rma_settings_cancel[] = array(
+				'title'       => esc_html__( 'Background Color', 'woo-refund-and-exchange-lite' ),
+				'type'        => 'color',
+				'id'          => 'wps_rma_cancel_background_color',
+				'value'       => get_option( 'wps_rma_cancel_background_color' ),
+				'class'       => 'wrael-text-class ' . $this->rma_pro_activate,
+				'placeholder' => esc_html__( '#fffdf7', 'woo-refund-and-exchange-lite' ),
+			);
+
+			$wps_rma_settings_cancel[] = array(
+				'title'       => esc_html__( 'Surface Color', 'woo-refund-and-exchange-lite' ),
+				'type'        => 'color',
+				'id'          => 'wps_rma_cancel_surface_color',
+				'value'       => get_option( 'wps_rma_cancel_surface_color' ),
+				'class'       => 'wrael-text-class ' . $this->rma_pro_activate,
+				'placeholder' => esc_html__( '#ffffff', 'woo-refund-and-exchange-lite' ),
+			);
+
+			$wps_rma_settings_cancel[] = array(
+				'title'       => esc_html__( 'Accent Color', 'woo-refund-and-exchange-lite' ),
+				'type'        => 'color',
+				'id'          => 'wps_rma_cancel_accent_color',
+				'value'       => get_option( 'wps_rma_cancel_accent_color' ),
+				'class'       => 'wrael-text-class ' . $this->rma_pro_activate,
+				'placeholder' => esc_html__( '#ff9800', 'woo-refund-and-exchange-lite' ),
+			);
+
+			$wps_rma_settings_cancel[] = array(
+				'title'       => esc_html__( 'Text Color', 'woo-refund-and-exchange-lite' ),
+				'type'        => 'color',
+				'id'          => 'wps_rma_cancel_text_color',
+				'value'       => get_option( 'wps_rma_cancel_text_color' ),
+				'class'       => 'wrael-text-class ' . $this->rma_pro_activate,
+				'placeholder' => esc_html__( '#18120b', 'woo-refund-and-exchange-lite' ),
+			);
+
+			$wps_rma_settings_cancel[] = array(
+				'title'       => esc_html__( 'Button Text Color', 'woo-refund-and-exchange-lite' ),
+				'type'        => 'color',
+				'id'          => 'wps_rma_cancel_button_text_color',
+				'value'       => get_option( 'wps_rma_cancel_button_text_color' ),
+				'class'       => 'wrael-text-class ' . $this->rma_pro_activate,
+				'placeholder' => esc_html__( '#18120b', 'woo-refund-and-exchange-lite' ),
 			);
 			$wps_rma_settings_cancel[] = array(
 				'type'        => 'button',
 				'id'          => 'wps_rma_save_cancel_setting',
 				'button_text' => esc_html__( 'Save Setting', 'woo-refund-and-exchange-lite' ),
-				'class'       => 'wrael-button-class button_' . $this->rma_pro_activate,
+				'class'       => 'wrael-button-class button_ submit-btn',
 			);
 			return $wps_rma_settings_cancel;
 		}
@@ -994,7 +1132,7 @@ if ( ! class_exists( 'Wps_Rma_Settings_Extend' ) ) {
 					'type'        => 'button',
 					'id'          => 'wps_rma_save_wallet_setting',
 					'button_text' => esc_html__( 'Save Setting', 'woo-refund-and-exchange-lite' ),
-					'class'       => 'wrael-button-class button_' . $this->rma_pro_activate,
+					'class'       => 'wrael-button-class button_ submit-btn',
 				),
 			);
 			return $wps_rma_settings_wallet;
@@ -1115,7 +1253,7 @@ if ( ! class_exists( 'Wps_Rma_Settings_Extend' ) ) {
 					'type'        => 'button',
 					'id'          => 'wps_rma_save_sms_notification_setting',
 					'button_text' => esc_html__( 'Save Setting', 'woo-refund-and-exchange-lite' ),
-					'class'       => 'wrael-button-class button_' . $this->rma_pro_activate,
+					'class'       => 'wrael-button-class button_ submit-btn',
 				),
 
 			);
@@ -1243,7 +1381,7 @@ if ( ! class_exists( 'Wps_Rma_Settings_Extend' ) ) {
 					'type'        => 'button',
 					'id'          => 'wps_rma_save_whatsapp_notification_setting',
 					'button_text' => esc_html__( 'Save Setting', 'woo-refund-and-exchange-lite' ),
-					'class'       => 'wrael-button-class button_' . $this->rma_pro_activate,
+					'class'       => 'wrael-button-class button_ submit-btn',
 				),
 			);
 			return $wps_rma_settings_sms_notification;
