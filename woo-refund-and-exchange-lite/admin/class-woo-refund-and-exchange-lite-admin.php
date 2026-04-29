@@ -324,6 +324,8 @@ class Woo_Refund_And_Exchange_Lite_Admin {
 					'ajaxurl'                    => admin_url( 'admin-ajax.php' ),
 					'reloadurl'                  => admin_url( 'admin.php?page=woo_refund_and_exchange_lite_menu' ),
 					'wps_rma_nonce'              => wp_create_nonce( 'wps_rma_ajax_seurity' ),
+					'wrael_expert_action'        => Woo_Refund_And_Exchange_Lite_Talk_To_Expert_Form::AJAX_ACTION,
+					'wrael_expert_nonce'         => wp_create_nonce( Woo_Refund_And_Exchange_Lite_Talk_To_Expert_Form::NONCE_ACTION ),
 					'wrael_admin_param_location' => admin_url( 'admin.php?page=woo_refund_and_exchange_lite_menu&wrael_tab=woo-refund-and-exchange-lite-general' ),
 					'check_pro_active'           => esc_html( $pro_active ),
 					'wps_policy_already_exist'   => esc_html__( 'Policy already exists', 'woo-refund-and-exchange-lite' ),
@@ -604,7 +606,7 @@ class Woo_Refund_And_Exchange_Lite_Admin {
 			'type'        => 'button',
 			'id'          => 'wps_rma_save_general_setting',
 			'button_text' => esc_html__( 'Save Setting', 'woo-refund-and-exchange-lite' ),
-			'class'       => 'wrael-button-class submit-btn',
+			'class'       => 'wrael-button-class',
 		);
 		return $wrael_settings_general;
 	}
@@ -976,7 +978,7 @@ class Woo_Refund_And_Exchange_Lite_Admin {
 
 		$wps_rma_settings_refund[] = array(
 			'title'       => esc_html__( 'Background Color', 'woo-refund-and-exchange-lite' ),
-			'type'        => 'color',
+			'type'        => 'text',
 			'id'          => 'wps_rma_refund_background_color',
 			'value'       => get_option( 'wps_rma_refund_background_color' ),
 			'class'       => 'wrael-text-class',
@@ -985,7 +987,7 @@ class Woo_Refund_And_Exchange_Lite_Admin {
 
 		$wps_rma_settings_refund[] = array(
 			'title'       => esc_html__( 'Surface Color', 'woo-refund-and-exchange-lite' ),
-			'type'        => 'color',
+			'type'        => 'text',
 			'id'          => 'wps_rma_refund_surface_color',
 			'value'       => get_option( 'wps_rma_refund_surface_color' ),
 			'class'       => 'wrael-text-class',
@@ -994,7 +996,7 @@ class Woo_Refund_And_Exchange_Lite_Admin {
 
 		$wps_rma_settings_refund[] = array(
 			'title'       => esc_html__( 'Accent Color', 'woo-refund-and-exchange-lite' ),
-			'type'        => 'color',
+			'type'        => 'text',
 			'id'          => 'wps_rma_refund_accent_color',
 			'value'       => get_option( 'wps_rma_refund_accent_color' ),
 			'class'       => 'wrael-text-class',
@@ -1003,7 +1005,7 @@ class Woo_Refund_And_Exchange_Lite_Admin {
 
 		$wps_rma_settings_refund[] = array(
 			'title'       => esc_html__( 'Text Color', 'woo-refund-and-exchange-lite' ),
-			'type'        => 'color',
+			'type'        => 'text',
 			'id'          => 'wps_rma_refund_text_color',
 			'value'       => get_option( 'wps_rma_refund_text_color' ),
 			'class'       => 'wrael-text-class',
@@ -1012,7 +1014,7 @@ class Woo_Refund_And_Exchange_Lite_Admin {
 
 		$wps_rma_settings_refund[] = array(
 			'title'       => esc_html__( 'Button Text Color', 'woo-refund-and-exchange-lite' ),
-			'type'        => 'color',
+			'type'        => 'text',
 			'id'          => 'wps_rma_refund_button_text_color',
 			'value'       => get_option( 'wps_rma_refund_button_text_color' ),
 			'class'       => 'wrael-text-class',
@@ -1026,7 +1028,7 @@ class Woo_Refund_And_Exchange_Lite_Admin {
 			'type'        => 'button',
 			'id'          => 'wps_rma_save_refund_setting',
 			'button_text' => esc_html__( 'Save Setting', 'woo-refund-and-exchange-lite' ),
-			'class'       => 'wrael-button-class submit-btn',
+			'class'       => 'wrael-button-class',
 		);
 		return $wps_rma_settings_refund;
 	}
@@ -1144,7 +1146,7 @@ class Woo_Refund_And_Exchange_Lite_Admin {
 			'type'        => 'button',
 			'id'          => 'wps_rma_save_text_setting',
 			'button_text' => esc_html__( 'Save Setting', 'woo-refund-and-exchange-lite' ),
-			'class'       => 'wrael-button-class submit-btn',
+			'class'       => 'wrael-button-class',
 		);
 		return $wps_rma_settings_order_message;
 	}

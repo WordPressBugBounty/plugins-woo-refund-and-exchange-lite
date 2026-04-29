@@ -5,8 +5,8 @@ Tags: refund, exchange, wallet, RMA, woocommerce cancel order
 Requires at least: 6.7
 Tested up to: 6.9
 WC requires at least: 6.5
-WC tested up to: 10.6.2
-Stable tag: 4.5.9
+WC tested up to: 10.7
+Stable tag: 4.6.0
 Requires PHP: 7.2
 License: GPLv3 or later 
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -267,6 +267,9 @@ Privacy: https://legal.hubspot.com/privacy-policy
 16. API Settings.
 
 == Changelog == 
+
+= 4.6.0 - Released on 29 April 2026 = 
+*  New - comptability with latest wc (10.7)
 
 = 4.5.9 - Released on 21 April 2026 = 
 *  Enhancement - Performance optimization
@@ -564,7 +567,5 @@ Privacy: https://legal.hubspot.com/privacy-policy
 
 == Upgrade Notice ==
 
-= 4.5.9 - Released on 21 April 2026 = 
-*  Enhancement - Performance optimization
-*  Enhancement - UI enhancement
-*  New - comptability with latest wp (6.9) and wc (10.6.2)
+= 4.6.0 - Released on 29 April 2026 = 
+*  New - comptability with latest wc (10.7)

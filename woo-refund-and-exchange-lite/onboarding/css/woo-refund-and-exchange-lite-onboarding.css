@@ -298,8 +298,8 @@ input#s2id_autogen1 {
     display: inline-block;
     font-size: 20px;
     position: absolute;
-    right: 20px;
-    top: 15px;
+    right: 16px;
+    top: 10px;
     transition: transform 0.3s ease-out;
 }
 
@@ -362,7 +362,7 @@ input#s2id_autogen1 {
 }
 
 .wps-wrael-on-boarding-form-no_thanks .mdc-button {
-    border-radius: 14px !important;
+    border-radius: 35px !important;
     padding: 12px 24px !important;
 }
 
