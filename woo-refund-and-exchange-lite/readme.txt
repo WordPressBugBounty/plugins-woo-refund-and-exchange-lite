@@ -6,7 +6,7 @@ Requires at least: 6.7
 Tested up to: 6.9
 WC requires at least: 6.5
 WC tested up to: 10.7
-Stable tag: 4.6.0
+Stable tag: 4.6.1
 Requires PHP: 7.2
 License: GPLv3 or later 
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -267,6 +267,9 @@ Privacy: https://legal.hubspot.com/privacy-policy
 16. API Settings.
 
 == Changelog == 
+
+= 4.6.1 - Released on 1 May 2026 = 
+*  Enhancement - UI enhancement for dashboard
 
 = 4.6.0 - Released on 29 April 2026 = 
 *  New - comptability with latest wc (10.7)
@@ -567,5 +570,5 @@ Privacy: https://legal.hubspot.com/privacy-policy
 
 == Upgrade Notice ==
 
-= 4.6.0 - Released on 29 April 2026 = 
-*  New - comptability with latest wc (10.7)
+= 4.6.1 - Released on 1 May 2026 = 
+*  Enhancement - UI enhancement for dashboard
