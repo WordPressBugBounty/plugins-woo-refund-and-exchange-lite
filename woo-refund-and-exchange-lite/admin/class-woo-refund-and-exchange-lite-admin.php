@@ -765,6 +765,18 @@ class Woo_Refund_And_Exchange_Lite_Admin {
 				),
 			),
 			array(
+				'title'       => esc_html__( 'Enable Refund Without Return (customer keeps item)', 'woo-refund-and-exchange-lite' ),
+				'type'        => 'radio-switch',
+				'description' => esc_html__( 'When enabled, admins can approve a return request as refund-only and let the customer keep the item. Such requests are never restocked.', 'woo-refund-and-exchange-lite' ),
+				'id'          => 'wps_rma_refund_without_return',
+				'value'       => get_option( 'wps_rma_refund_without_return' ),
+				'class'       => 'wrael-radio-switch-class',
+				'options'     => array(
+					'yes' => esc_html__( 'YES', 'woo-refund-and-exchange-lite' ),
+					'no'  => esc_html__( 'NO', 'woo-refund-and-exchange-lite' ),
+				),
+			),
+			array(
 				'title'   => esc_html__( 'Enable Attachment', 'woo-refund-and-exchange-lite' ),
 				'type'    => 'radio-switch',
 				'id'      => 'wps_rma_refund_attachment',
@@ -785,6 +797,18 @@ class Woo_Refund_And_Exchange_Lite_Admin {
 				'min'         => '0',
 				'max'         => '15',
 				'placeholder' => 'Enter the attachment limit',
+			),
+			array(
+				'title'       => esc_html__( 'Mandatory Attachment', 'woo-refund-and-exchange-lite' ),
+				'type'        => 'radio-switch',
+				'id'          => 'wps_rma_refund_attachment_mandatory',
+				'value'       => get_option( 'wps_rma_refund_attachment_mandatory' ),
+				'description' => esc_html__( 'When enabled, the customer must attach a file to submit the refund request. Only applies when Enable Attachment is on.', 'woo-refund-and-exchange-lite' ),
+				'class'       => 'wrael-radio-switch-class',
+				'options'     => array(
+					'yes' => esc_html__( 'YES', 'woo-refund-and-exchange-lite' ),
+					'no'  => esc_html__( 'NO', 'woo-refund-and-exchange-lite' ),
+				),
 			),
 			array(
 				'title'   => esc_html__( 'Enable To Refund Shipping Charge', 'woo-refund-and-exchange-lite' ),
@@ -863,6 +887,19 @@ class Woo_Refund_And_Exchange_Lite_Admin {
 				'value'   => get_option( 'wps_rma_disable_refund_specific_user' ),
 				'class'   => 'wrael-radio-switch-class',
 				'options' => array(
+					'yes' => esc_html__( 'YES', 'woo-refund-and-exchange-lite' ),
+					'no'  => esc_html__( 'NO', 'woo-refund-and-exchange-lite' ),
+				),
+			),
+
+			array(
+				'title'       => esc_html__( 'Enable To Notify Customer When Blocked/Unblocked From Refund', 'woo-refund-and-exchange-lite' ),
+				'type'        => 'radio-switch',
+				'id'          => 'wps_rma_refund_block_user_notify_mail',
+				'value'       => get_option( 'wps_rma_refund_block_user_notify_mail' ),
+				'description' => esc_html__( 'If enabled, an email will be sent to the customer whenever their email is added to or removed from the restricted list below.', 'woo-refund-and-exchange-lite' ),
+				'class'       => 'wrael-radio-switch-class',
+				'options'     => array(
 					'yes' => esc_html__( 'YES', 'woo-refund-and-exchange-lite' ),
 					'no'  => esc_html__( 'NO', 'woo-refund-and-exchange-lite' ),
 				),
@@ -1071,6 +1108,19 @@ class Woo_Refund_And_Exchange_Lite_Admin {
 		foreach ( $pages as $page ) {
 			$get_pages[ $page->ID ] = $page->post_title;
 		}
+
+		$woocommerce_roles = array(
+			'customer'      => esc_html__( 'Customer', 'woo-refund-and-exchange-lite' ),
+			'shop_manager'  => esc_html__( 'Shop Manager', 'woo-refund-and-exchange-lite' ),
+			'subscriber'    => esc_html__( 'Subscriber', 'woo-refund-and-exchange-lite' ),
+			'contributor'   => esc_html__( 'Contributor', 'woo-refund-and-exchange-lite' ),
+			'author'        => esc_html__( 'Author', 'woo-refund-and-exchange-lite' ),
+			'editor'        => esc_html__( 'Editor', 'woo-refund-and-exchange-lite' ),
+			'administrator' => esc_html__( 'Administrator', 'woo-refund-and-exchange-lite' ),
+		);
+
+		$woocommerce_roles = apply_filters( 'wps_rma_add_extra_user_role', $woocommerce_roles );
+
 		$wps_rma_settings_order_message = array(
 			array(
 				'title'   => esc_html__( 'Enable Attachment', 'woo-refund-and-exchange-lite' ),
@@ -1082,6 +1132,39 @@ class Woo_Refund_And_Exchange_Lite_Admin {
 					'yes' => esc_html__( 'YES', 'woo-refund-and-exchange-lite' ),
 					'no'  => esc_html__( 'NO', 'woo-refund-and-exchange-lite' ),
 				),
+			),
+			array(
+				'title'       => esc_html__( 'Mandatory Attachment', 'woo-refund-and-exchange-lite' ),
+				'type'        => 'radio-switch',
+				'id'          => 'wps_rma_general_om_attachment_mandatory',
+				'value'       => get_option( 'wps_rma_general_om_attachment_mandatory' ),
+				'description' => esc_html__( 'When enabled, a file attachment is required to send an order message. Only applies when Enable Attachment is on.', 'woo-refund-and-exchange-lite' ),
+				'class'       => 'wrael-radio-switch-class',
+				'options'     => array(
+					'yes' => esc_html__( 'YES', 'woo-refund-and-exchange-lite' ),
+					'no'  => esc_html__( 'NO', 'woo-refund-and-exchange-lite' ),
+				),
+			),
+			array(
+				'title'   => esc_html__( 'Enable/Disable Order Message Functionality for Specific User Roles', 'woo-refund-and-exchange-lite' ),
+				'type'    => 'radio-switch',
+				'id'      => 'wps_rma_disable_order_message_user_role',
+				'value'   => get_option( 'wps_rma_disable_order_message_user_role' ),
+				'class'   => 'wrael-radio-switch-class',
+				'options' => array(
+					'yes' => esc_html__( 'YES', 'woo-refund-and-exchange-lite' ),
+					'no'  => esc_html__( 'NO', 'woo-refund-and-exchange-lite' ),
+				),
+			),
+			array(
+				'title'       => esc_html__( 'Select User Roles to Restrict Order Message Access', 'woo-refund-and-exchange-lite' ),
+				'type'        => 'multiselect',
+				'description' => esc_html__( 'If no user role is selected, the order message feature will be available for all user roles', 'woo-refund-and-exchange-lite' ),
+				'id'          => 'wps_rma_order_message_disable_user_roles',
+				'value'       => get_option( 'wps_rma_order_message_disable_user_roles' ),
+				'class'       => 'wrael-multiselect-class wps-defaut-multiselect',
+				'placeholder' => '',
+				'options'     => $woocommerce_roles,
 			),
 		);
 		$wps_rma_settings_order_message =
@@ -1316,7 +1399,24 @@ class Woo_Refund_And_Exchange_Lite_Admin {
 			if ( current_user_can( 'wps-rma-refund-approve' ) ) {
 				$orderid  = isset( $_POST['orderid'] ) ? sanitize_text_field( wp_unslash( $_POST['orderid'] ) ) : '';
 				$products = wps_rma_get_meta_data( $orderid, 'wps_rma_return_product', true );
+
+				// Refund without return: flag the order so the refund is not restocked and no return is expected.
+				$keep_item = isset( $_POST['keep_item'] ) ? sanitize_text_field( wp_unslash( $_POST['keep_item'] ) ) : 'no';
+				if ( 'on' === get_option( 'wps_rma_refund_without_return' ) && 'yes' === $keep_item ) {
+					wps_rma_update_meta_data( $orderid, 'wps_rma_keep_item', 'yes' );
+					// Suppress the Manage Stock button so the item is never restocked.
+					wps_rma_update_meta_data( $orderid, 'wps_rma_manage_stock_for_return', 'no' );
+				}
+
 				$response = wps_rma_return_req_approve_callback( $orderid, $products );
+
+				if ( 'yes' === wps_rma_get_meta_data( $orderid, 'wps_rma_keep_item', true ) ) {
+					$order_obj = wc_get_order( $orderid );
+					if ( $order_obj ) {
+						$order_obj->add_order_note( esc_html__( 'Refund without return — customer keeps the item (not restocked).', 'woo-refund-and-exchange-lite' ), false );
+					}
+				}
+
 				echo wp_json_encode( $response );
 			}
 		}
@@ -1337,6 +1437,172 @@ class Woo_Refund_And_Exchange_Lite_Admin {
 			}
 		}
 		wp_die();
+	}
+
+	/**
+	 * Force restock OFF for "refund without return" (keep the item) requests.
+	 *
+	 * Hooked to `wps_rma_auto_restock_item_refund` at a priority later than the pro
+	 * implementation so it wins. When the order is flagged keep-item, the refund
+	 * payload's `restock_items` is set to false, so wc_create_refund() will not
+	 * return the item to stock.
+	 *
+	 * @param bool   $restock Whether to restock on refund.
+	 * @param string $orderid Order ID.
+	 * @return bool
+	 */
+	public function wps_rma_keep_item_no_restock( $restock, $orderid ) {
+		if ( 'yes' === wps_rma_get_meta_data( $orderid, 'wps_rma_keep_item', true ) ) {
+			return false;
+		}
+		return $restock;
+	}
+
+	/**
+	 * Add bulk Approve / Reject options to the RMA request list table.
+	 *
+	 * Hooked to the `wps_rma_lite_request_bulk_option` filter exposed by
+	 * Woo_Refund_And_Exchange_Lite_Rma_Request_Table::get_bulk_actions().
+	 *
+	 * @param array $actions Existing bulk actions.
+	 * @return array
+	 */
+	public function wps_rma_lite_request_bulk_option( $actions ) {
+		$actions['wps_rma_bulk_approve'] = esc_html__( 'Approve', 'woo-refund-and-exchange-lite' );
+		$actions['wps_rma_bulk_reject']  = esc_html__( 'Reject', 'woo-refund-and-exchange-lite' );
+		return $actions;
+	}
+
+	/**
+	 * Process a bulk Approve / Reject action on selected return requests.
+	 *
+	 * Hooked to the `wps_rma_lite_process_bulk_request_action` action fired by
+	 * Woo_Refund_And_Exchange_Lite_Rma_Request_Table::process_bulk_action() during
+	 * prepare_items(). Headers are already sent at this point, so results are shown
+	 * via an inline admin notice rather than a redirect. For each selected order the
+	 * pending Return request is processed, and — when the pro plugin is active — its
+	 * pending Exchange request as well, reusing the same status callbacks as the
+	 * single-request AJAX handlers.
+	 *
+	 * @param string $action Current bulk action slug.
+	 * @param array  $post   Raw $_POST from the list table form.
+	 */
+	public function wps_rma_lite_process_bulk_request_action( $action, $post ) {
+		if ( 'wps_rma_bulk_approve' !== $action && 'wps_rma_bulk_reject' !== $action ) {
+			return;
+		}
+
+		$nonce = isset( $post['wps_rma_request_table_lite'] ) ? sanitize_text_field( wp_unslash( $post['wps_rma_request_table_lite'] ) ) : '';
+		if ( ! wp_verify_nonce( $nonce, 'wps_rma_request_table_lite' ) ) {
+			return;
+		}
+
+		$is_approve = 'wps_rma_bulk_approve' === $action;
+		$capability = $is_approve ? 'wps-rma-refund-approve' : 'wps-rma-refund-cancel';
+		if ( ! current_user_can( $capability ) ) {
+			$this->wps_rma_bulk_admin_notice(
+				esc_html__( 'You do not have permission to perform this action.', 'woo-refund-and-exchange-lite' ),
+				'error'
+			);
+			return;
+		}
+
+		$order_ids = isset( $post['wps_rma_order_ids'] ) ? array_map( 'absint', (array) $post['wps_rma_order_ids'] ) : array();
+		$order_ids = array_filter( array_unique( $order_ids ) );
+		if ( empty( $order_ids ) ) {
+			$this->wps_rma_bulk_admin_notice(
+				esc_html__( 'No return requests were selected.', 'woo-refund-and-exchange-lite' ),
+				'warning'
+			);
+			return;
+		}
+
+		// Exchange is only available when the pro plugin (and its callbacks) is active.
+		$exchange_supported = $is_approve
+			? function_exists( 'wps_exchange_req_approve_callback' )
+			: function_exists( 'wps_wrma_exchange_req_cancel_callback' );
+
+		$processed = 0;
+		$skipped   = 0;
+		foreach ( $order_ids as $order_id ) {
+			$acted = false;
+
+			// Return request.
+			$products = wps_rma_get_meta_data( $order_id, 'wps_rma_return_product', true );
+			if ( $this->wps_rma_bulk_has_pending( $products ) ) {
+				if ( $is_approve ) {
+					wps_rma_return_req_approve_callback( $order_id, $products );
+				} else {
+					wps_rma_return_req_cancel_callback( $order_id, $products, false );
+				}
+				$acted = true;
+			}
+
+			// Exchange request (pro).
+			if ( $exchange_supported ) {
+				$exchange_products = wps_rma_get_meta_data( $order_id, 'wps_wrma_exchange_product', true );
+				if ( $this->wps_rma_bulk_has_pending( $exchange_products ) ) {
+					if ( $is_approve ) {
+						wps_exchange_req_approve_callback( $order_id );
+					} else {
+						wps_wrma_exchange_req_cancel_callback( $order_id, false );
+					}
+					$acted = true;
+				}
+			}
+
+			if ( $acted ) {
+				++$processed;
+			} else {
+				++$skipped;
+			}
+		}
+
+		$message = $is_approve
+			/* translators: %d: number of requests approved. */
+			? sprintf( _n( '%d request approved.', '%d requests approved.', $processed, 'woo-refund-and-exchange-lite' ), $processed )
+			/* translators: %d: number of requests rejected. */
+			: sprintf( _n( '%d request rejected.', '%d requests rejected.', $processed, 'woo-refund-and-exchange-lite' ), $processed );
+
+		if ( $skipped ) {
+			/* translators: %d: number of selected requests skipped because they were not pending. */
+			$message .= ' ' . sprintf( _n( '%d request skipped (not pending).', '%d requests skipped (not pending).', $skipped, 'woo-refund-and-exchange-lite' ), $skipped );
+		}
+
+		$this->wps_rma_bulk_admin_notice( $message, $processed ? 'success' : 'warning' );
+	}
+
+	/**
+	 * Whether a request meta payload has at least one pending entry.
+	 *
+	 * Both return (`wps_rma_return_product`) and exchange (`wps_wrma_exchange_product`)
+	 * meta share the same shape: an array keyed by request timestamp, each entry
+	 * carrying a `status`.
+	 *
+	 * @param mixed $products Request meta payload.
+	 * @return bool
+	 */
+	private function wps_rma_bulk_has_pending( $products ) {
+		if ( ! is_array( $products ) ) {
+			return false;
+		}
+		foreach ( $products as $product ) {
+			if ( isset( $product['status'] ) && 'pending' === $product['status'] ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Render an inline admin notice for a bulk action result.
+	 *
+	 * @param string $message Notice text (already translated/escaped).
+	 * @param string $type    One of success|warning|error.
+	 */
+	private function wps_rma_bulk_admin_notice( $message, $type = 'success' ) {
+		$class = 'notice notice-' . ( in_array( $type, array( 'success', 'warning', 'error' ), true ) ? $type : 'success' ) . ' is-dismissible';
+		printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
 	}
 
 	/**

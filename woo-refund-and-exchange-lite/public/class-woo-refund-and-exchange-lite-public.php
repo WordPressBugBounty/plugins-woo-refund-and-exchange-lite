@@ -95,7 +95,7 @@ class Woo_Refund_And_Exchange_Lite_Public {
 		$view_msg           = get_option( 'wps_rma_general_om', 'no' );
 		$wps_rma_return     = get_option( 'wps_rma_refund_enable', false );
 		$refund_hide        = get_option( 'wps_rma_refund_button_pages', false );
-		if ( isset( $view_msg ) && 'on' === $view_msg ) {
+		if ( isset( $view_msg ) && 'on' === $view_msg && 'yes' === wps_rma_order_message_role_allowed() ) {
 			$order_msg_button_text = get_option( 'wps_rma_order_message_button_text', false );
 			if ( isset( $order_msg_button_text ) && ! empty( $order_msg_button_text ) ) {
 				$order_msg_button_text = $order_msg_button_text;
@@ -144,6 +144,16 @@ class Woo_Refund_And_Exchange_Lite_Public {
 		$condition          = wps_rma_show_buttons( 'refund', $order );
 		$get_order_currency = get_woocommerce_currency_symbol( $order->get_currency() );
 
+		// Refund without return: let the customer know they may keep the item.
+		if ( 'yes' === wps_rma_get_meta_data( $order->get_id(), 'wps_rma_keep_item', true ) ) {
+			?>
+			<p class="wps_rma_keep_item_notice" style="padding:10px 14px;border-radius:6px;background:#f0fdfa;border:1px solid #0d9488;color:#0d5049;">
+				<strong><?php esc_html_e( 'Refund issued — no return needed.', 'woo-refund-and-exchange-lite' ); ?></strong>
+				<?php esc_html_e( 'Your refund has been approved and you may keep the item. There is no need to send it back.', 'woo-refund-and-exchange-lite' ); ?>
+			</p>
+			<?php
+		}
+
 		// View order message code start.
 		$wps_rma_view_order_msg_page_id    = get_option( 'wps_rma_view_order_msg_page_id', true );
 		$view_order_msg_url                = get_permalink( $wps_rma_view_order_msg_page_id );
@@ -155,18 +165,25 @@ class Woo_Refund_And_Exchange_Lite_Public {
 		} else {
 			$wps_rma_order_message_button_text = esc_html__( 'View Order Message', 'woo-refund-and-exchange-lite' );
 		}
-		$view_msg     = get_option( 'wps_rma_general_om', 'no' );
-		$redirect_uri = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
+		$view_msg              = get_option( 'wps_rma_general_om', 'no' );
+		$order_msg_role_status = wps_rma_order_message_role_allowed();
+		$redirect_uri          = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 		if ( isset( $redirect_uri ) ) {
 			if ( isset( $view_msg ) && 'on' === $view_msg ) {
-				?>
-				<form action="<?php echo esc_html( add_query_arg( 'order_id', $order->get_id(), $view_order_msg_url ) ); ?>" method="post">
-					<input type="hidden" value="<?php echo esc_html( $order->get_id() ); ?>" name="order_id">
-					<p>
-						<input type="submit" class="btn button wps_rma_view_order" value="<?php echo esc_html( $wps_rma_order_message_button_text ); ?>">
-					</p>
-				</form>
-				<?php
+				if ( 'yes' === $order_msg_role_status ) {
+					?>
+					<form action="<?php echo esc_html( add_query_arg( 'order_id', $order->get_id(), $view_order_msg_url ) ); ?>" method="post">
+						<input type="hidden" value="<?php echo esc_html( $order->get_id() ); ?>" name="order_id">
+						<p>
+							<input type="submit" class="btn button wps_rma_view_order" value="<?php echo esc_html( $wps_rma_order_message_button_text ); ?>">
+						</p>
+					</form>
+					<?php
+				} else {
+					?>
+					<p class="wps_rma_order_msg_restricted"><?php echo esc_html( $order_msg_role_status ); ?></p>
+					<?php
+				}
 			}
 		}
 		// View order message code end.
