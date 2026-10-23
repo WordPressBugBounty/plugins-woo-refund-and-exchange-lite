@@ -5,8 +5,8 @@ Tags: refund, exchange, wallet, RMA, woocommerce cancel order
 Requires at least: 6.7
 Tested up to: 7.0.4
 WC requires at least: 6.5
-WC tested up to: 11.0.1
-Stable tag: 4.6.4
+WC tested up to: 10.1.1
+Stable tag: 4.6.5
 Requires PHP: 7.4
 License: GPLv3 or later 
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -283,6 +283,9 @@ Privacy: https://legal.hubspot.com/privacy-policy
 17. API Settings.
 
 == Changelog == 
+
+= 4.6.5 - Released on 23 Oct 2026 = 
+*  Fix: vulnerability issues fixed
 
 = 4.6.4 - Released on 17 Aug 2026 = 
 *  New: Compatibility with latest WP (7.0.4) and  WC (11.0.1) 
@@ -605,7 +608,5 @@ Privacy: https://legal.hubspot.com/privacy-policy
 
 == Upgrade Notice ==
 
-= 4.6.4 - Released on 17 Aug 2026 = 
-*  New: Compatibility with latest WP (7.0.4) and  WC (11.0.1) 
-*  Fix: Resolved a vulnerability allowing unauthorized access to guest order data and actions. 
-*  Fix: loader issue solved in view order message functionality
+= 4.6.5 - Released on 23 Oct 2026 = 
+*  Fix: vulnerability issues fixed
