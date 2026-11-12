@@ -77,7 +77,7 @@ class Woo_Refund_And_Exchange_Lite {
 			$this->version = WOO_REFUND_AND_EXCHANGE_LITE_VERSION;
 		} else {
 
-			$this->version = '4.6.5';
+			$this->version = '4.7.0';
 		}
 
 		$this->plugin_name = 'return-refund-and-exchange-for-woocommerce';
@@ -368,6 +368,7 @@ class Woo_Refund_And_Exchange_Lite {
 		$this->loader->add_action( 'wp_ajax_nopriv_wps_rma_fetch_order_msgs', $wrael_plugin_common, 'wps_rma_fetch_order_msgs_callback' );
 		$this->loader->add_action( 'wp_ajax_wps_rma_send_order_msg', $wrael_plugin_common, 'wps_rma_send_order_msg_callback' );
 		$this->loader->add_action( 'wp_ajax_nopriv_wps_rma_send_order_msg', $wrael_plugin_common, 'wps_rma_send_order_msg_callback' );
+		$this->loader->add_action( 'wp_ajax_wps_rma_save_order_msg_contact', $wrael_plugin_common, 'wps_rma_save_order_msg_contact_callback' );
 	}
 
 	/**
@@ -484,6 +485,11 @@ class Woo_Refund_And_Exchange_Lite {
 			'title'     => esc_html__( 'RMA Request', 'woo-refund-and-exchange-lite' ),
 			'name'      => 'woo-refund-and-exchange-lite-rma-request',
 			'file_path' => WOO_REFUND_AND_EXCHANGE_LITE_DIR_PATH . 'admin/partials/woo-refund-and-exchange-lite-rma-request.php',
+		);
+		$wrael_default_tabs['woo-refund-and-exchange-lite-analytics'] = array(
+			'title'     => esc_html__( 'Analytics', 'woo-refund-and-exchange-lite' ),
+			'name'      => 'woo-refund-and-exchange-lite-analytics',
+			'file_path' => WOO_REFUND_AND_EXCHANGE_LITE_DIR_PATH . 'admin/partials/woo-refund-and-exchange-lite-analytics.php',
 		);
 		$wrael_default_tabs['woo-refund-and-exchange-lite-general'] = array(
 			'title'     => esc_html__( 'General', 'woo-refund-and-exchange-lite' ),

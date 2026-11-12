@@ -187,11 +187,11 @@ CSS;
 									$coupon_discount = get_option( 'wps_rma_refund_deduct_coupon', 'no' );
 									if ( 'on' === $coupon_discount ) {
 										$item_price_inc_tax = $item->get_total() + $item->get_total_tax();
-										$item_price_exc_tax = $item->get_total() - $item->get_total_tax();
+										$item_price_exc_tax = $item->get_total();
 										$item_price = $item->get_total();
 									} else {
 										$item_price_inc_tax = $item->get_subtotal() + $item->get_subtotal_tax();
-										$item_price_exc_tax = $item->get_subtotal() - $item->get_subtotal_tax();
+										$item_price_exc_tax = $item->get_subtotal();
 										$item_price = $item->get_subtotal();
 									}
 									if ( 'wps_rma_inlcude_tax' === $wps_rma_check_tax ) {
@@ -411,6 +411,10 @@ CSS;
 											</span>
 											<div><input type="button" value="<?php esc_html_e( 'Add More', 'woo-refund-and-exchange-lite' ); ?>" class="wps_rma_return_request_morefiles" data-count="1" data-max="<?php echo esc_html( $attach_limit ); ?>"></div>
 											<i><?php esc_html_e( 'Only PNG, JPG, JPEG, MP4, and WEBM files are supported', 'woo-refund-and-exchange-lite' ); ?>.</i>
+											<?php
+											// Fires after the refund form's attachment field, for example to show a photo inspection disclosure.
+											do_action( 'wps_rma_after_refund_attachment_field', $order_id );
+											?>
 										</p>
 									</div>
 									<?php

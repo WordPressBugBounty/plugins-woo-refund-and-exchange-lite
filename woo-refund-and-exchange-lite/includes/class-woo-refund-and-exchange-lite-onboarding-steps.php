@@ -555,6 +555,7 @@ class Woo_Refund_And_Exchange_Lite_Onboarding_Steps {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( array( 'message' => esc_html__( 'You do not have permission to perform this action.', 'woo-refund-and-exchange-lite' ) ), 403 );
 		}
+
 		$form_data = ! empty( $_POST['form_data'] ) ? json_decode( sanitize_text_field( wp_unslash( $_POST['form_data'] ) ) ) : '';
 
 		$formatted_data = array();

@@ -151,6 +151,34 @@ class Woo_Refund_And_Exchange_Lite_Common {
 					'back' => esc_attr__( 'Back', 'woo-refund-and-exchange-lite' ),
 				)
 			);
+
+			// Save button for the customer "Receive updates over SMS" field.
+			if ( ! is_admin() && 'on' === get_option( 'wps_rma_enable_sms_notification' ) && 'on' === get_option( 'wps_rma_enable_sms_notification_for_customer' ) ) {
+				$sms_contact_js = 'common/js/wps-rma-order-msg-sms-contact.js';
+				wp_enqueue_script( 'wps-rma-order-msg-sms-contact', WOO_REFUND_AND_EXCHANGE_LITE_DIR_URL . $sms_contact_js, array( 'wps_rma_react_object' ), filemtime( WOO_REFUND_AND_EXCHANGE_LITE_DIR_PATH . $sms_contact_js ), true );
+				wp_localize_script(
+					'wps-rma-order-msg-sms-contact',
+					'wps_rma_sms_contact_object',
+					array(
+						'ajaxurl'      => admin_url( 'admin-ajax.php' ),
+						'nonce'        => wp_create_nonce( 'ajax-nonce' ),
+						'save_label'   => esc_html__( 'Save Number', 'woo-refund-and-exchange-lite' ),
+						'saving_label' => esc_html__( 'Saving...', 'woo-refund-and-exchange-lite' ),
+						'error_label'  => esc_html__( 'Could not save the number. Please try again.', 'woo-refund-and-exchange-lite' ),
+					)
+				);
+				wp_register_style( 'wps-rma-order-msg-sms-contact', false, array(), WOO_REFUND_AND_EXCHANGE_LITE_VERSION );
+				wp_enqueue_style( 'wps-rma-order-msg-sms-contact' );
+				wp_add_inline_style(
+					'wps-rma-order-msg-sms-contact',
+					'.wps_rma_sms_contact_save{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:10px}' .
+					'.wps_rma_sms_contact_save__btn{background:#00b884;color:#fff;border:0;border-radius:5px;padding:8px 18px;font-size:14px;cursor:pointer}' .
+					'.wps_rma_sms_contact_save__btn:disabled{opacity:.6;cursor:default}' .
+					'.wps_rma_sms_contact_save__status{font-size:12px}' .
+					'.wps_rma_sms_contact_save__status.is-success{color:#008a5e}' .
+					'.wps_rma_sms_contact_save__status.is-error{color:#d63638}'
+				);
+			}
 		}
 	}
 
@@ -260,26 +288,20 @@ class Woo_Refund_And_Exchange_Lite_Common {
 								wp_mkdir_p( $directory, 0755, true );
 							}
 
-							$file_format = pathinfo( sanitize_file_name( $_FILES['wps_rma_return_request_files']['name'][ $i ] ), PATHINFO_EXTENSION );
+							$file_format = strtolower( pathinfo( sanitize_file_name( $_FILES['wps_rma_return_request_files']['name'][ $i ] ), PATHINFO_EXTENSION ) );
 
 							$file_name = wps_rma_generate_random_filename( $file_format );
 
-							$allowed_types = array(
-								'png',
-								'jpeg',
-								'mp4',
-								'webm',
-								'ogg',
-								'quicktime',
-								'x-msvideo',
-							);
+							// File extensions matching the MIME types accepted by the request form JS.
+							$allowed_types = wps_rma_allowed_attachment_extensions();
 
-							if ( in_array( $file_format, $allowed_types, true ) ) {
-								$source_path = sanitize_text_field( wp_unslash( $_FILES['wps_rma_return_request_files']['tmp_name'][ $i ] ) );
+							$source_path = sanitize_text_field( wp_unslash( $_FILES['wps_rma_return_request_files']['tmp_name'][ $i ] ) );
+							if ( in_array( $file_format, $allowed_types, true ) && wps_rma_is_valid_attachment_file( $source_path, sanitize_file_name( $_FILES['wps_rma_return_request_files']['name'][ $i ] ) ) ) {
 								$target_path = $directory . '/' . sanitize_file_name( $file_name );
-								$filename[] = $file_name;
-								$wp_filesystem->move( $source_path, $target_path, true );
-								$wp_filesystem->chmod( $target_path, 0644 ); // For files permission issue.
+								if ( $wp_filesystem->move( $source_path, $target_path, true ) ) {
+									wps_rma_set_attachment_file_permissions( $target_path );
+									$filename[] = $file_name;
+								}
 							}
 						}
 					}
@@ -376,11 +398,11 @@ class Woo_Refund_And_Exchange_Lite_Common {
 									$coupon_discount = get_option( 'wps_rma_refund_deduct_coupon', 'no' );
 									if ( 'on' === $coupon_discount ) {
 										$item_price_inc_tax = $item->get_total() + $item->get_total_tax();
-										$item_price_exc_tax = $item->get_total() - $item->get_total_tax();
+										$item_price_exc_tax = $item->get_total();
 										$item_price = $item->get_total();
 									} else {
 										$item_price_inc_tax = $item->get_subtotal() + $item->get_subtotal_tax();
-										$item_price_exc_tax = $item->get_subtotal() - $item->get_subtotal_tax();
+										$item_price_exc_tax = $item->get_subtotal();
 										$item_price = $item->get_subtotal();
 									}
 									if ( 'wps_rma_inlcude_tax' === $wps_rma_check_tax ) {
@@ -880,13 +902,13 @@ class Woo_Refund_And_Exchange_Lite_Common {
 								$sourcepath = sanitize_text_field( wp_unslash( $_FILES['wps_order_msg_attachment']['tmp_name'][ $i ] ) );
 								$targetpath = $directory . '/' . sanitize_file_name( $file_name );
 
-								$filename[ $i ] ['img'] = true;
-								$filename[ $i ]['name'] = $file_name;
-								$attachment[ $i ]       = $targetpath;
+								if ( $wp_filesystem->move( $sourcepath, $targetpath, true ) ) {
+									wps_rma_set_attachment_file_permissions( $targetpath );
 
-								$wp_filesystem->move( $sourcepath, $targetpath, true );
-								$wp_filesystem->chmod( $targetpath, 0644 ); // For files permission issue.
-
+									$filename[ $i ] ['img'] = true;
+									$filename[ $i ]['name'] = $file_name;
+									$attachment[ $i ]       = $targetpath;
+								}
 							}
 						}
 					}
@@ -927,5 +949,30 @@ class Woo_Refund_And_Exchange_Lite_Common {
 		);
 		echo wp_json_encode( $res );
 		wp_die();
+	}
+
+	/**
+	 * Save the customer SMS number from the order message page, without sending a message.
+	 */
+	public function wps_rma_save_order_msg_contact_callback() {
+		check_ajax_referer( 'ajax-nonce', 'nonce' );
+
+		$order_id = isset( $_POST['order_id'] ) ? absint( wp_unslash( $_POST['order_id'] ) ) : 0;
+		$order    = $order_id ? wc_get_order( $order_id ) : false;
+		$user_id  = $order ? $order->get_user_id() : 0;
+
+		// Same access rule as sending an order message: the order owner or a shop manager.
+		if ( ! $order || ! ( ( $user_id > 0 && get_current_user_id() === $user_id ) || array_intersect( array( 'editor', 'administrator', 'shop_manager' ), wp_get_current_user()->roles ) ) ) {
+			wp_send_json_error( array( 'msg' => esc_html__( 'You are not allowed to update this order.', 'woo-refund-and-exchange-lite' ) ), 403 );
+		}
+
+		// Digits with the country code, no '+', as the SMS senders expect.
+		$number = isset( $_POST['wps_rma_customer_contact_order_message'] ) ? preg_replace( '/\D/', '', sanitize_text_field( wp_unslash( $_POST['wps_rma_customer_contact_order_message'] ) ) ) : '';
+		if ( strlen( $number ) < 7 || strlen( $number ) > 15 ) {
+			wp_send_json_error( array( 'msg' => esc_html__( 'Please enter a valid phone number with the country code.', 'woo-refund-and-exchange-lite' ) ), 400 );
+		}
+
+		wps_rma_update_meta_data( $order_id, 'wps_rma_customer_contact_order_message', $number );
+		wp_send_json_success( array( 'msg' => esc_html__( 'Phone number saved. You will receive SMS updates for this order.', 'woo-refund-and-exchange-lite' ) ) );
 	}
 }
